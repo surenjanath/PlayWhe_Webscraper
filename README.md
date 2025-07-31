@@ -95,7 +95,7 @@ The scraper extracts the following data for each PlayWhe draw:
 ## Output Files
 
 - **Database**: `Database/PlayWhe_Results_Database.db` - SQLite database with all scraped data
-- **HTML Reports**: `analysis_report.html` - Generated comprehensive analysis report
+- **Analysis Summary**: `analysis_summary.md` - Generated comprehensive analysis summary for README
 - **Debug Files**: `response_{month}_{year}.html` - Raw HTML responses for debugging
 
 ## Analysis Features
