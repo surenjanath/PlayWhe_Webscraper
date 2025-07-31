@@ -347,81 +347,145 @@ def add_playwhe_data_to_db(session, playwhe_data):
     
     session.commit()
     print(f'[*] Added {added_count} new records, skipped {skipped_count} duplicates')
+    return added_count, skipped_count
 
 def comprehensive_analysis(data):
     """Perform comprehensive analysis on PlayWhe data"""
     if not data:
         return "No data available for analysis."
     
+    # Convert to DataFrame for analysis
     df = pd.DataFrame(data)
+    df['Mark'] = pd.to_numeric(df['Mark'], errors='coerce')
+    df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
     
-    analysis_results = {
-        'basic_stats': {},
-        'time_analysis': {},
-        'number_analysis': {},
-        'promo_analysis': {},
-        'patterns': {},
-        'predictions': {}
-    }
-    
-    # Basic Statistics
-    analysis_results['basic_stats'] = {
+    # Basic statistics
+    basic_stats = {
         'total_draws': len(df),
-        'date_range': f"{df['Date'].min()} to {df['Date'].max()}",
+        'date_range': f"{df['Date'].min().strftime('%Y-%m-%d')} to {df['Date'].max().strftime('%Y-%m-%d')}",
         'unique_draws': df['Draw#'].nunique(),
-        'unique_dates': df['Date'].nunique()
+        'unique_dates': df['Date'].dt.date.nunique(),
+        'data_span_days': (df['Date'].max() - df['Date'].min()).days,
+        'avg_draws_per_day': len(df) / df['Date'].dt.date.nunique()
     }
     
-    # Time Analysis
-    time_counts = df['Time'].value_counts()
-    analysis_results['time_analysis'] = {
-        'time_distribution': time_counts.to_dict(),
-        'most_common_time': time_counts.index[0] if len(time_counts) > 0 else 'Unknown',
-        'least_common_time': time_counts.index[-1] if len(time_counts) > 0 else 'Unknown'
+    # Time analysis
+    time_distribution = df['Time'].value_counts().to_dict()
+    time_analysis = {
+        'time_distribution': time_distribution,
+        'most_common_time': max(time_distribution, key=time_distribution.get),
+        'least_common_time': min(time_distribution, key=time_distribution.get),
+        'time_balance': {time: count/len(df)*100 for time, count in time_distribution.items()}
     }
     
-    # Number Analysis (Mark)
-    mark_counts = df['Mark'].value_counts()
-    analysis_results['number_analysis'] = {
-        'most_common_numbers': mark_counts.head(10).to_dict(),
-        'least_common_numbers': mark_counts.tail(10).to_dict(),
-        'number_range': f"{df['Mark'].min()} to {df['Mark'].max()}",
+    # Number analysis
+    number_counts = df['Mark'].value_counts().sort_values(ascending=False)
+    number_analysis = {
         'average_number': df['Mark'].mean(),
         'median_number': df['Mark'].median(),
-        'number_std': df['Mark'].std()
+        'std_deviation': df['Mark'].std(),
+        'number_range': f"{df['Mark'].min()} to {df['Mark'].max()}",
+        'most_common_numbers': number_counts.head(10).to_dict(),
+        'least_common_numbers': number_counts.tail(10).to_dict(),
+        'number_frequency': {num: count/len(df)*100 for num, count in number_counts.items()},
+        'even_numbers': len(df[df['Mark'] % 2 == 0]),
+        'odd_numbers': len(df[df['Mark'] % 2 == 1]),
+        'low_numbers_1_18': len(df[df['Mark'] <= 18]),
+        'high_numbers_19_36': len(df[df['Mark'] >= 19])
     }
     
-    # Promo Analysis
-    promo_counts = df['Promo'].value_counts()
-    analysis_results['promo_analysis'] = {
-        'promo_distribution': promo_counts.to_dict(),
-        'most_common_promo': promo_counts.index[0] if len(promo_counts) > 0 else 'Unknown'
+    # Promo analysis
+    promo_distribution = df['Promo'].value_counts().to_dict()
+    promo_analysis = {
+        'promo_distribution': promo_distribution,
+        'total_promos': len(promo_distribution),
+        'most_common_promo': max(promo_distribution, key=promo_distribution.get) if promo_distribution else 'None',
+        'promo_frequency': {promo: count/len(df)*100 for promo, count in promo_distribution.items()},
+        'draws_with_promo': len(df[df['Promo'] != '']),
+        'draws_without_promo': len(df[df['Promo'] == '']),
+        'promo_percentage': len(df[df['Promo'] != '']) / len(df) * 100
     }
     
-    # Pattern Analysis
-    # Check for consecutive numbers
-    df_sorted = df.sort_values(['Date', 'Time'])
+    # Pattern analysis
     consecutive_count = 0
-    for i in range(1, len(df_sorted)):
-        if abs(df_sorted.iloc[i]['Mark'] - df_sorted.iloc[i-1]['Mark']) == 1:
-            consecutive_count += 1
+    same_number_count = 0
+    number_trends = []
     
-    analysis_results['patterns'] = {
+    for i in range(len(df) - 1):
+        current_mark = df.iloc[i]['Mark']
+        next_mark = df.iloc[i+1]['Mark']
+        
+        # Consecutive numbers
+        if abs(current_mark - next_mark) == 1:
+            consecutive_count += 1
+        
+        # Same number repeated
+        if current_mark == next_mark:
+            same_number_count += 1
+        
+        # Number trends
+        if current_mark < next_mark:
+            number_trends.append('increasing')
+        elif current_mark > next_mark:
+            number_trends.append('decreasing')
+        else:
+            number_trends.append('same')
+    
+    # Calculate trends
+    trend_counts = pd.Series(number_trends).value_counts()
+    
+    patterns = {
         'consecutive_numbers': consecutive_count,
-        'consecutive_percentage': (consecutive_count / len(df)) * 100 if len(df) > 0 else 0
+        'consecutive_percentage': (consecutive_count / len(df)) * 100,
+        'same_number_repeats': same_number_count,
+        'same_number_percentage': (same_number_count / len(df)) * 100,
+        'increasing_trends': trend_counts.get('increasing', 0),
+        'decreasing_trends': trend_counts.get('decreasing', 0),
+        'trend_balance': {
+            'increasing': trend_counts.get('increasing', 0) / len(trend_counts) * 100,
+            'decreasing': trend_counts.get('decreasing', 0) / len(trend_counts) * 100,
+            'same': trend_counts.get('same', 0) / len(trend_counts) * 100
+        }
     }
     
-    # Simple Predictions (based on frequency)
-    hot_numbers = mark_counts.head(5).index.tolist()
-    cold_numbers = mark_counts.tail(5).index.tolist()
+    # Predictive insights with enhanced logic
+    hot_numbers = list(number_counts.head(5).index)
+    cold_numbers = list(number_counts.tail(5).index)
+    next_predicted_time = max(time_distribution, key=time_distribution.get)
     
-    analysis_results['predictions'] = {
+    # Calculate expected vs actual frequencies
+    expected_frequency = len(df) / 36  # Expected if all numbers were equally likely
+    over_performing = {num: count for num, count in number_counts.items() if count > expected_frequency * 1.2}
+    under_performing = {num: count for num, count in number_counts.items() if count < expected_frequency * 0.8}
+    
+    predictions = {
         'hot_numbers': hot_numbers,
         'cold_numbers': cold_numbers,
-        'next_predicted_time': time_counts.index[0] if len(time_counts) > 0 else 'Unknown'
+        'next_predicted_time': next_predicted_time,
+        'over_performing_numbers': list(over_performing.keys())[:5],
+        'under_performing_numbers': list(under_performing.keys())[:5],
+        'expected_frequency': expected_frequency,
+        'confidence_level': 'High' if len(df) > 500 else 'Medium' if len(df) > 200 else 'Low'
     }
     
-    return analysis_results
+    # Recent performance analysis
+    recent_draws = df.tail(20)  # Last 20 draws
+    recent_trends = {
+        'recent_hot_numbers': recent_draws['Mark'].value_counts().head(3).to_dict(),
+        'recent_cold_numbers': recent_draws['Mark'].value_counts().tail(3).to_dict(),
+        'recent_time_distribution': recent_draws['Time'].value_counts().to_dict(),
+        'recent_promo_distribution': recent_draws['Promo'].value_counts().head(5).to_dict()
+    }
+    
+    return {
+        'basic_stats': basic_stats,
+        'time_analysis': time_analysis,
+        'number_analysis': number_analysis,
+        'promo_analysis': promo_analysis,
+        'patterns': patterns,
+        'predictions': predictions,
+        'recent_trends': recent_trends
+    }
 
 def generate_enhanced_html_report(analysis_results, latest_entries):
     """Generate enhanced HTML report with comprehensive analysis"""
@@ -658,12 +722,90 @@ def generate_enhanced_html_report(analysis_results, latest_entries):
     
     return html_report
 
+def generate_markdown_summary(analysis_results, latest_entries):
+    """Generate Markdown-compatible summary for README"""
+    
+    markdown_summary = f"""
+## 🎯 PlayWhe Analysis Summary
+
+### 📊 Basic Statistics
+- **Total Draws:** {analysis_results['basic_stats']['total_draws']:,}
+- **Date Range:** {analysis_results['basic_stats']['date_range']}
+- **Data Span:** {analysis_results['basic_stats']['data_span_days']} days
+- **Average Draws/Day:** {analysis_results['basic_stats']['avg_draws_per_day']:.1f}
+- **Confidence Level:** {analysis_results['predictions']['confidence_level']}
+
+### ⏰ Time Distribution
+| Time | Frequency | Percentage |
+|------|-----------|------------|
+{chr(10).join([f"| {time} | {count} | {analysis_results['time_analysis']['time_balance'][time]:.1f}% |" for time, count in analysis_results['time_analysis']['time_distribution'].items()])}
+
+### 🔥 Hot Numbers (Most Frequent)
+| Number | Frequency | Expected | Performance |
+|--------|-----------|----------|-------------|
+{chr(10).join([f"| {num} | {freq} | {analysis_results['predictions']['expected_frequency']:.1f} | {'🔥 Over' if num in analysis_results['predictions']['over_performing_numbers'] else 'Normal'} |" for num, freq in list(analysis_results['number_analysis']['most_common_numbers'].items())[:5]])}
+
+### ❄️ Cold Numbers (Least Frequent)
+| Number | Frequency | Expected | Performance |
+|--------|-----------|----------|-------------|
+{chr(10).join([f"| {num} | {freq} | {analysis_results['predictions']['expected_frequency']:.1f} | {'❄️ Under' if num in analysis_results['predictions']['under_performing_numbers'] else 'Normal'} |" for num, freq in list(analysis_results['number_analysis']['least_common_numbers'].items())[:5]])}
+
+### 📈 Number Analysis
+- **Average Number:** {analysis_results['number_analysis']['average_number']:.1f}
+- **Median Number:** {analysis_results['number_analysis']['median_number']:.1f}
+- **Standard Deviation:** {analysis_results['number_analysis']['std_deviation']:.1f}
+- **Even Numbers:** {analysis_results['number_analysis']['even_numbers']} ({analysis_results['number_analysis']['even_numbers']/analysis_results['basic_stats']['total_draws']*100:.1f}%)
+- **Odd Numbers:** {analysis_results['number_analysis']['odd_numbers']} ({analysis_results['number_analysis']['odd_numbers']/analysis_results['basic_stats']['total_draws']*100:.1f}%)
+- **Low Numbers (1-18):** {analysis_results['number_analysis']['low_numbers_1_18']} ({analysis_results['number_analysis']['low_numbers_1_18']/analysis_results['basic_stats']['total_draws']*100:.1f}%)
+- **High Numbers (19-36):** {analysis_results['number_analysis']['high_numbers_19_36']} ({analysis_results['number_analysis']['high_numbers_19_36']/analysis_results['basic_stats']['total_draws']*100:.1f}%)
+
+###  Promo Analysis
+| Promo Type | Frequency | Percentage |
+|------------|-----------|------------|
+{chr(10).join([f"| {promo} | {count} | {analysis_results['promo_analysis']['promo_frequency'][promo]:.1f}% |" for promo, count in list(analysis_results['promo_analysis']['promo_distribution'].items())[:5]])}
+- **Draws with Promo:** {analysis_results['promo_analysis']['draws_with_promo']} ({analysis_results['promo_analysis']['promo_percentage']:.1f}%)
+- **Draws without Promo:** {analysis_results['promo_analysis']['draws_without_promo']} ({100-analysis_results['promo_analysis']['promo_percentage']:.1f}%)
+
+### 🔍 Pattern Analysis
+- **Consecutive Numbers:** {analysis_results['patterns']['consecutive_numbers']} ({analysis_results['patterns']['consecutive_percentage']:.1f}%)
+- **Same Number Repeats:** {analysis_results['patterns']['same_number_repeats']} ({analysis_results['patterns']['same_number_percentage']:.1f}%)
+- **Increasing Trends:** {analysis_results['patterns']['increasing_trends']} ({analysis_results['patterns']['trend_balance']['increasing']:.1f}%)
+- **Decreasing Trends:** {analysis_results['patterns']['decreasing_trends']} ({analysis_results['patterns']['trend_balance']['decreasing']:.1f}%)
+
+### 🔮 Predictive Insights
+- **Hot Numbers:** {', '.join(map(str, analysis_results['predictions']['hot_numbers']))}
+- **Cold Numbers:** {', '.join(map(str, analysis_results['predictions']['cold_numbers']))}
+- **Over-Performing:** {', '.join(map(str, analysis_results['predictions']['over_performing_numbers']))}
+- **Under-Performing:** {', '.join(map(str, analysis_results['predictions']['under_performing_numbers']))}
+- **Next Predicted Time:** {analysis_results['predictions']['next_predicted_time']}
+
+### 📊 Recent Trends (Last 20 Draws)
+- **Recent Hot Numbers:** {', '.join([f"{num}({freq})" for num, freq in analysis_results['recent_trends']['recent_hot_numbers'].items()])}
+- **Recent Cold Numbers:** {', '.join([f"{num}({freq})" for num, freq in analysis_results['recent_trends']['recent_cold_numbers'].items()])}
+
+### 📈 Latest Results
+{chr(10).join([f"- **Draw #{entry['Draw#']}** ({entry['Date']}) - {entry['Time']}: Mark {entry['Mark']} {'(' + entry['Promo'] + ')' if entry['Promo'] else ''}" for entry in latest_entries[-5:]])}
+
+---
+*Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+"""
+    
+    return markdown_summary
+
 async def run_scraper(urls, db_session):
+    start_time = perf_counter()
     scraper = WebScraper(urls)
     await scraper.main()
     
     if scraper.ParsedData:
-        add_playwhe_data_to_db(db_session, scraper.ParsedData)
+        # Get database counts before adding new data
+        total_db_records = db_session.query(Playwhe_Result).count()
+        
+        # Add data to database and get results
+        new_records_count, duplicate_records_count = add_playwhe_data_to_db(db_session, scraper.ParsedData)
+        
+        # Calculate execution time
+        execution_time = perf_counter() - start_time
         
         # Perform comprehensive analysis
         analysis_results = comprehensive_analysis(scraper.ParsedData)
@@ -674,13 +816,51 @@ async def run_scraper(urls, db_session):
         # Generate enhanced HTML report
         html_report = generate_enhanced_html_report(analysis_results, latest_entries)
         
+        # Generate Markdown summary for README
+        markdown_summary = generate_markdown_summary(analysis_results, latest_entries)
+        
         # Write HTML report to file
         with open('analysis_report.html', 'w', encoding='utf-8') as file:
             file.write(html_report)
         
+        # Write Markdown summary to file for GitHub Actions
+        with open('analysis_summary.md', 'w', encoding='utf-8') as file:
+            file.write(markdown_summary)
+        
+        # Generate execution summary
+        execution_summary = f"""
+## 🚀 Execution Summary
+
+### 📊 Scraping Results
+- **Total Records Processed:** {len(scraper.ParsedData):,}
+- **New Records Added:** {new_records_count}
+- **Duplicate Records Skipped:** {duplicate_records_count}
+- **Execution Time:** {execution_time:.2f} seconds
+- **Average Processing Speed:** {len(scraper.ParsedData)/execution_time:.1f} records/second
+
+### 🔍 Data Quality
+- **Database Records:** {total_db_records:,}
+- **Data Completeness:** {len(scraper.ParsedData)/total_db_records*100:.1f}% of total database
+- **Date Coverage:** {analysis_results['basic_stats']['data_span_days']} days
+- **Time Distribution Balance:** {min(analysis_results['time_analysis']['time_balance'].values()):.1f}% - {max(analysis_results['time_analysis']['time_balance'].values()):.1f}%
+
+### 📈 Analysis Confidence
+- **Confidence Level:** {analysis_results['predictions']['confidence_level']}
+- **Statistical Significance:** {'High' if analysis_results['basic_stats']['total_draws'] > 500 else 'Medium' if analysis_results['basic_stats']['total_draws'] > 200 else 'Low'}
+- **Pattern Reliability:** {'Strong' if analysis_results['patterns']['consecutive_percentage'] < 10 else 'Moderate'}
+
+---
+*Execution completed at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
+"""
+        
+        # Append execution summary to markdown file
+        with open('analysis_summary.md', 'a', encoding='utf-8') as file:
+            file.write(execution_summary)
+        
         print("✅ Enhanced analysis report generated successfully.")
-        print(f"📊 Total records processed: {len(scraper.ParsedData)}")
-        print(f" Analysis saved to: analysis_report.html")
+        print(f"📊 Total records processed: {len(scraper.ParsedData):,}")
+        print(f"📈 Analysis saved to: analysis_report.html")
+        print(f"📋 Summary saved to: analysis_summary.md")
     else:
         print("❌ No data was scraped. Please check the website structure or try again later.")
 

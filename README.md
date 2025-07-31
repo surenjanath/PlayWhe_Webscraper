@@ -28,7 +28,7 @@ The game involves selecting one number from 1-36, with various promo balls (Gold
   - Promo ball analysis (Gold Ball, Megaball, etc.)
   - Pattern detection and predictive insights
   - Hot and cold number identification
-- **Automated Scheduling**: GitHub Actions integration for automated runs (Thursdays and Sundays at 12 AM)
+- **Automated Scheduling**: GitHub Actions integration for automated runs (Daily at 10 PM)
 
 ## Requirements
 
@@ -135,7 +135,7 @@ Contributions are welcome! If you find any bugs or have suggestions for improvem
 
 ## GitHub Actions
 
-This repository includes a GitHub Actions workflow that automatically performs analysis on the scraped PlayWhe results. The workflow is triggered on each push to the `main` branch and runs every Thursday and Sunday at 12 AM. It analyzes the data and generates comprehensive reports.
+This repository includes a GitHub Actions workflow that automatically performs analysis on the scraped PlayWhe results. The workflow is triggered on each push to the `main` branch and runs daily at 10 PM. It analyzes the data and generates comprehensive reports.
 
 ## Technical Details
 
@@ -171,58 +171,5 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Recent Analysis Results
 
-<!--START_SECTION:analysis-->
-<h1>🎯 PlayWhe Comprehensive Analysis Report</h1>
-<div class="stats-grid">
-    <div class="stat-card">
-        <h4>Total Draws</h4>
-        <div class="stat-value">708</div>
-    </div>
-    <div class="stat-card">
-        <h4>Date Range</h4>
-        <div class="stat-value">2025-01-01 to 2025-07-30</div>
-    </div>
-    <div class="stat-card">
-        <h4>Unique Dates</h4>
-        <div class="stat-value">177</div>
-    </div>
-</div>
+{{analysis_placeholder}}
 
-<h3>🔥 Hot Numbers (Most Frequent)</h3>
-<table>
-    <tr><th>Number</th><th>Frequency</th></tr>
-    <tr><td>11</td><td>33</td></tr>
-    <tr><td>16</td><td>29</td></tr>
-    <tr><td>9</td><td>26</td></tr>
-    <tr><td>24</td><td>24</td></tr>
-    <tr><td>31</td><td>24</td></tr>
-</table>
-
-<h3>❄️ Cold Numbers (Least Frequent)</h3>
-<table>
-    <tr><th>Number</th><th>Frequency</th></tr>
-    <tr><td>26</td><td>17</td></tr>
-    <tr><td>15</td><td>17</td></tr>
-    <tr><td>34</td><td>17</td></tr>
-    <tr><td>19</td><td>16</td></tr>
-    <tr><td>21</td><td>16</td></tr>
-</table>
-
-<h3>⏰ Time Distribution</h3>
-<table>
-    <tr><th>Time</th><th>Frequency</th></tr>
-    <tr><td>Morning</td><td>177</td></tr>
-    <tr><td>Midday</td><td>177</td></tr>
-    <tr><td>Afternoon</td><td>177</td></tr>
-    <tr><td>Evening</td><td>177</td></tr>
-</table>
-
-<h3> Promo Analysis</h3>
-<table>
-    <tr><th>Promo Type</th><th>Frequency</th></tr>
-    <tr><td>Megaball</td><td>134</td></tr>
-    <tr><td>Mega Ultra Ball</td><td>89</td></tr>
-    <tr><td>Mega Extreme Ball</td><td>63</td></tr>
-    <tr><td>Gold Ball</td><td>27</td></tr>
-</table>
-<!--END_SECTION:analysis-->
