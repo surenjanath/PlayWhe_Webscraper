@@ -702,10 +702,10 @@ def generate_enhanced_html_report(analysis_results, latest_entries):
             <div class="latest-results">
                 {''.join([f"""
                 <div style="margin-bottom: 20px; padding: 15px; border: 1px solid #ddd; border-radius: 5px;">
-                    <h4>Draw #{entry['Draw#']} - {entry['Date']}</h4>
-                    <p><strong>Time:</strong> {entry['Time']}</p>
-                    <p><strong>Mark:</strong> {entry['Mark']}</p>
-                    <p><strong>Promo:</strong> {entry['Promo']}</p>
+                    <h4>Draw #{entry.get('Draw#', 'N/A')} - {entry.get('Date', 'N/A')}</h4>
+                    <p><strong>Time:</strong> {entry.get('Time', 'N/A')}</p>
+                    <p><strong>Mark:</strong> {entry.get('Mark', 'N/A')}</p>
+                    <p><strong>Promo:</strong> {entry.get('Promo', 'N/A')}</p>
                 </div>
                 """ for entry in latest_entries[-5:]])}
             </div>
@@ -784,7 +784,7 @@ def generate_markdown_summary(analysis_results, latest_entries):
 - **Recent Cold Numbers:** {', '.join([f"{num}({freq})" for num, freq in analysis_results['recent_trends']['recent_cold_numbers'].items()])}
 
 ### 📈 Latest Results
-{chr(10).join([f"- **Draw #{entry['Draw#']}** ({entry['Date']}) - {entry['Time']}: Mark {entry['Mark']} {'(' + entry['Promo'] + ')' if entry['Promo'] else ''}" for entry in latest_entries[-5:]])}
+{chr(10).join([f"- **Draw #{entry.get('Draw#', 'N/A')}** ({entry.get('Date', 'N/A')}) - {entry.get('Time', 'N/A')}: Mark {entry.get('Mark', 'N/A')} {'(' + entry.get('Promo', '') + ')' if entry.get('Promo') else ''}" for entry in latest_entries[-5:]])}
 
 ---
 *Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
