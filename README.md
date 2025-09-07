@@ -176,7 +176,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 🎯 PlayWhe Analysis Summary
 
 ### 📊 Basic Statistics
-- **Total Draws:** 839
+- **Total Draws:** 840
 - **Date Range:** 2025-01-01 to 2025-09-06
 - **Data Span:** 248 days
 - **Average Draws/Day:** 4.0
@@ -188,7 +188,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 | Morning | 210 | 25.0% |
 | Midday | 210 | 25.0% |
 | Afternoon | 210 | 25.0% |
-| Evening | 209 | 24.9% |
+| Evening | 210 | 25.0% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
@@ -212,27 +212,27 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Average Number:** 18.7
 - **Median Number:** 18.0
 - **Standard Deviation:** 10.1
-- **Even Numbers:** 421 (50.2%)
-- **Odd Numbers:** 418 (49.8%)
+- **Even Numbers:** 421 (50.1%)
+- **Odd Numbers:** 419 (49.9%)
 - **Low Numbers (1-18):** 424 (50.5%)
-- **High Numbers (19-36):** 415 (49.5%)
+- **High Numbers (19-36):** 416 (49.5%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-|  | 310 | 36.9% |
+|  | 311 | 37.0% |
 | Megaball | 162 | 19.3% |
 | Mega Ultra Ball | 101 | 12.0% |
 | Mega Extreme Ball | 78 | 9.3% |
 | Megaball, Mega Ultra Ball | 57 | 6.8% |
-- **Draws with Promo:** 529 (63.1%)
-- **Draws without Promo:** 310 (36.9%)
+- **Draws with Promo:** 529 (63.0%)
+- **Draws without Promo:** 311 (37.0%)
 
 ### 🔍 Pattern Analysis
 - **Consecutive Numbers:** 51 (6.1%)
 - **Same Number Repeats:** 16 (1.9%)
 - **Increasing Trends:** 401 (13366.7%)
-- **Decreasing Trends:** 421 (14033.3%)
+- **Decreasing Trends:** 422 (14066.7%)
 
 ### 🔮 Predictive Insights
 - **Hot Numbers:** 11, 16, 32, 24, 31
@@ -242,33 +242,33 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Next Predicted Time:** Morning
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 8(2), 15(2), 1(2)
-- **Recent Cold Numbers:** 30(1), 23(1), 32(1)
+- **Recent Hot Numbers:** 1(2), 15(2), 26(1)
+- **Recent Cold Numbers:** 23(1), 32(1), 27(1)
 
 ### 📈 Latest Results
-- **Draw #26052** (2025-09-05) - Afternoon: Mark 18 (Mega Extreme Ball)
 - **Draw #26053** (2025-09-05) - Evening: Mark 30 (Megaball, Mega Ultra Ball)
 - **Draw #26054** (2025-09-06) - Morning: Mark 1 
 - **Draw #26055** (2025-09-06) - Midday: Mark 23 (Megaball)
 - **Draw #26056** (2025-09-06) - Afternoon: Mark 32 (Megaball)
+- **Draw #26057** (2025-09-06) - Evening: Mark 27 
 
 ---
-*Last updated: 2025-09-06 22:02:13*
+*Last updated: 2025-09-07 22:02:14*
 
 ## 🚀 Execution Summary
 
 ### 📊 Scraping Results
-- **Total Records Processed:** 839
-- **New Records Added:** 4
-- **Duplicate Records Skipped:** 835
-- **Execution Time:** 44.73 seconds
-- **Average Processing Speed:** 18.8 records/second
+- **Total Records Processed:** 840
+- **New Records Added:** 1
+- **Duplicate Records Skipped:** 839
+- **Execution Time:** 44.46 seconds
+- **Average Processing Speed:** 18.9 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 835
-- **Data Completeness:** 100.5% of total database
+- **Database Records:** 839
+- **Data Completeness:** 100.1% of total database
 - **Date Coverage:** 248 days
-- **Time Distribution Balance:** 24.9% - 25.0%
+- **Time Distribution Balance:** 25.0% - 25.0%
 
 ### 📈 Analysis Confidence
 - **Confidence Level:** High
@@ -276,4 +276,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2025-09-06 22:02:13*
+*Execution completed at: 2025-09-07 22:02:14*
