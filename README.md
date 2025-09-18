@@ -176,99 +176,99 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 🎯 PlayWhe Analysis Summary
 
 ### 📊 Basic Statistics
-- **Total Draws:** 875
-- **Date Range:** 2025-01-01 to 2025-09-17
-- **Data Span:** 259 days
+- **Total Draws:** 508
+- **Date Range:** 2025-01-01 to 2025-05-31
+- **Data Span:** 150 days
 - **Average Draws/Day:** 4.0
 - **Confidence Level:** High
 
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| Morning | 219 | 25.0% |
-| Midday | 219 | 25.0% |
-| Afternoon | 219 | 25.0% |
-| Evening | 218 | 24.9% |
+| Morning | 127 | 25.0% |
+| Midday | 127 | 25.0% |
+| Afternoon | 127 | 25.0% |
+| Evening | 127 | 25.0% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 16 | 37 | 24.3 | 🔥 Over |
-| 11 | 35 | 24.3 | 🔥 Over |
-| 32 | 32 | 24.3 | 🔥 Over |
-| 20 | 31 | 24.3 | 🔥 Over |
-| 9 | 31 | 24.3 | 🔥 Over |
+| 11 | 24 | 14.1 | 🔥 Over |
+| 9 | 20 | 14.1 | 🔥 Over |
+| 31 | 20 | 14.1 | 🔥 Over |
+| 28 | 19 | 14.1 | 🔥 Over |
+| 4 | 19 | 14.1 | 🔥 Over |
 
 ### ❄️ Cold Numbers (Least Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 15 | 21 | 24.3 | Normal |
-| 19 | 20 | 24.3 | Normal |
-| 33 | 20 | 24.3 | Normal |
-| 29 | 20 | 24.3 | Normal |
-| 36 | 20 | 24.3 | Normal |
+| 5 | 12 | 14.1 | Normal |
+| 33 | 12 | 14.1 | Normal |
+| 27 | 11 | 14.1 | ❄️ Under |
+| 21 | 11 | 14.1 | ❄️ Under |
+| 1 | 11 | 14.1 | ❄️ Under |
 
 ### 📈 Number Analysis
 - **Average Number:** 18.8
 - **Median Number:** 18.0
 - **Standard Deviation:** 10.1
-- **Even Numbers:** 445 (50.9%)
-- **Odd Numbers:** 430 (49.1%)
-- **Low Numbers (1-18):** 440 (50.3%)
-- **High Numbers (19-36):** 435 (49.7%)
+- **Even Numbers:** 249 (49.0%)
+- **Odd Numbers:** 259 (51.0%)
+- **Low Numbers (1-18):** 258 (50.8%)
+- **High Numbers (19-36):** 250 (49.2%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-|  | 321 | 36.7% |
-| Megaball | 170 | 19.4% |
-| Mega Ultra Ball | 106 | 12.1% |
-| Mega Extreme Ball | 84 | 9.6% |
-| Megaball, Mega Ultra Ball | 59 | 6.7% |
-- **Draws with Promo:** 554 (63.3%)
-- **Draws without Promo:** 321 (36.7%)
+|  | 174 | 34.3% |
+| Megaball | 96 | 18.9% |
+| Mega Ultra Ball | 64 | 12.6% |
+| Mega Extreme Ball | 47 | 9.3% |
+| Megaball, Mega Ultra Ball | 33 | 6.5% |
+- **Draws with Promo:** 334 (65.7%)
+- **Draws without Promo:** 174 (34.3%)
 
 ### 🔍 Pattern Analysis
-- **Consecutive Numbers:** 57 (6.5%)
-- **Same Number Repeats:** 18 (2.1%)
-- **Increasing Trends:** 416 (13866.7%)
-- **Decreasing Trends:** 440 (14666.7%)
+- **Consecutive Numbers:** 29 (5.7%)
+- **Same Number Repeats:** 9 (1.8%)
+- **Increasing Trends:** 242 (8066.7%)
+- **Decreasing Trends:** 256 (8533.3%)
 
 ### 🔮 Predictive Insights
-- **Hot Numbers:** 16, 11, 32, 20, 9
-- **Cold Numbers:** 3, 1, 6, 22, 2
-- **Over-Performing:** 16, 11, 32, 20, 9
-- **Under-Performing:** 3, 1, 6, 22, 2
+- **Hot Numbers:** 11, 9, 31, 28, 4
+- **Cold Numbers:** 23, 14, 36, 6, 2
+- **Over-Performing:** 11, 9, 31, 28, 4
+- **Under-Performing:** 27, 21, 1, 23, 14
 - **Next Predicted Time:** Morning
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 8(3), 20(3), 32(2)
-- **Recent Cold Numbers:** 10(1), 25(1), 1(1)
+- **Recent Hot Numbers:** 33(2), 9(2), 5(1)
+- **Recent Cold Numbers:** 25(1), 7(1), 10(1)
 
 ### 📈 Latest Results
-- **Draw #26088** (2025-09-16) - Afternoon: Mark 9 (Megaball)
-- **Draw #26089** (2025-09-16) - Evening: Mark 8 (Mega Ultra Ball)
-- **Draw #26090** (2025-09-17) - Morning: Mark 12 (Mega Ultra Ball, Mega Extreme Ball)
-- **Draw #26091** (2025-09-17) - Midday: Mark 25 (Mega Ultra Ball)
-- **Draw #26092** (2025-09-17) - Afternoon: Mark 1 
+- **Draw #25721** (2025-05-30) - Evening: Mark 11 
+- **Draw #25722** (2025-05-31) - Morning: Mark 33 (Megaball, Mega Ultra Ball)
+- **Draw #25723** (2025-05-31) - Midday: Mark 25 
+- **Draw #25724** (2025-05-31) - Afternoon: Mark 7 
+- **Draw #25725** (2025-05-31) - Evening: Mark 10 (Megaball)
 
 ---
-*Last updated: 2025-09-17 22:02:29*
+*Last updated: 2025-09-18 22:08:36*
 
 ## 🚀 Execution Summary
 
 ### 📊 Scraping Results
-- **Total Records Processed:** 875
-- **New Records Added:** 4
-- **Duplicate Records Skipped:** 871
-- **Execution Time:** 44.95 seconds
-- **Average Processing Speed:** 19.5 records/second
+- **Total Records Processed:** 508
+- **New Records Added:** 0
+- **Duplicate Records Skipped:** 508
+- **Execution Time:** 429.18 seconds
+- **Average Processing Speed:** 1.2 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 871
-- **Data Completeness:** 100.5% of total database
-- **Date Coverage:** 259 days
-- **Time Distribution Balance:** 24.9% - 25.0%
+- **Database Records:** 875
+- **Data Completeness:** 58.1% of total database
+- **Date Coverage:** 150 days
+- **Time Distribution Balance:** 25.0% - 25.0%
 
 ### 📈 Analysis Confidence
 - **Confidence Level:** High
@@ -276,4 +276,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2025-09-17 22:02:29*
+*Execution completed at: 2025-09-18 22:08:36*
