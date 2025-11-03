@@ -2,19 +2,19 @@
 ## 🎯 PlayWhe Analysis Summary
 
 ### 📊 Basic Statistics
-- **Total Draws:** 1,028
-- **Date Range:** 2025-01-01 to 2025-11-01
-- **Data Span:** 304 days
+- **Total Draws:** 1,031
+- **Date Range:** 2025-01-01 to 2025-11-03
+- **Data Span:** 306 days
 - **Average Draws/Day:** 4.0
 - **Confidence Level:** High
 
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| Morning | 257 | 25.0% |
-| Midday | 257 | 25.0% |
-| Afternoon | 257 | 25.0% |
-| Evening | 257 | 25.0% |
+| Morning | 258 | 25.0% |
+| Midday | 258 | 25.0% |
+| Afternoon | 258 | 25.0% |
+| Evening | 257 | 24.9% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
@@ -38,27 +38,27 @@
 - **Average Number:** 18.5
 - **Median Number:** 18.0
 - **Standard Deviation:** 10.1
-- **Even Numbers:** 517 (50.3%)
-- **Odd Numbers:** 511 (49.7%)
-- **Low Numbers (1-18):** 523 (50.9%)
-- **High Numbers (19-36):** 505 (49.1%)
+- **Even Numbers:** 517 (50.1%)
+- **Odd Numbers:** 514 (49.9%)
+- **Low Numbers (1-18):** 525 (50.9%)
+- **High Numbers (19-36):** 506 (49.1%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-|  | 383 | 37.3% |
-| Megaball | 197 | 19.2% |
-| Mega Ultra Ball | 125 | 12.2% |
+|  | 384 | 37.2% |
+| Megaball | 197 | 19.1% |
+| Mega Ultra Ball | 126 | 12.2% |
 | Mega Extreme Ball | 98 | 9.5% |
 | Megaball, Mega Ultra Ball | 68 | 6.6% |
-- **Draws with Promo:** 645 (62.7%)
-- **Draws without Promo:** 383 (37.3%)
+- **Draws with Promo:** 647 (62.8%)
+- **Draws without Promo:** 384 (37.2%)
 
 ### 🔍 Pattern Analysis
 - **Consecutive Numbers:** 61 (5.9%)
 - **Same Number Repeats:** 23 (2.2%)
-- **Increasing Trends:** 493 (16433.3%)
-- **Decreasing Trends:** 511 (17033.3%)
+- **Increasing Trends:** 495 (16500.0%)
+- **Decreasing Trends:** 512 (17066.7%)
 
 ### 🔮 Predictive Insights
 - **Hot Numbers:** 16, 11, 32, 31, 9
@@ -68,33 +68,33 @@
 - **Next Predicted Time:** Morning
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 1(3), 6(2), 16(2)
-- **Recent Cold Numbers:** 26(1), 36(1), 24(1)
+- **Recent Hot Numbers:** 1(3), 6(2), 11(2)
+- **Recent Cold Numbers:** 7(1), 13(1), 27(1)
 
 ### 📈 Latest Results
-- **Draw #26241** (2025-10-31) - Evening: Mark 11 
-- **Draw #26242** (2025-11-01) - Morning: Mark 21 (Gold Ball, Megaball)
-- **Draw #26243** (2025-11-01) - Midday: Mark 26 (Mega Ultra Ball, Mega Extreme Ball)
 - **Draw #26244** (2025-11-01) - Afternoon: Mark 36 (Gold Ball)
 - **Draw #26245** (2025-11-01) - Evening: Mark 24 (Gold Ball)
+- **Draw #26246** (2025-11-03) - Morning: Mark 7 (Gold Ball)
+- **Draw #26247** (2025-11-03) - Midday: Mark 13 
+- **Draw #26248** (2025-11-03) - Afternoon: Mark 27 (Mega Ultra Ball)
 
 ---
-*Last updated: 2025-11-02 22:02:24*
+*Last updated: 2025-11-03 22:02:04*
 
 ## 🚀 Execution Summary
 
 ### 📊 Scraping Results
-- **Total Records Processed:** 1,028
-- **New Records Added:** 1
-- **Duplicate Records Skipped:** 1027
-- **Execution Time:** 54.22 seconds
-- **Average Processing Speed:** 19.0 records/second
+- **Total Records Processed:** 1,031
+- **New Records Added:** 3
+- **Duplicate Records Skipped:** 1028
+- **Execution Time:** 54.11 seconds
+- **Average Processing Speed:** 19.1 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 1,027
-- **Data Completeness:** 100.1% of total database
-- **Date Coverage:** 304 days
-- **Time Distribution Balance:** 25.0% - 25.0%
+- **Database Records:** 1,028
+- **Data Completeness:** 100.3% of total database
+- **Date Coverage:** 306 days
+- **Time Distribution Balance:** 24.9% - 25.0%
 
 ### 📈 Analysis Confidence
 - **Confidence Level:** High
@@ -102,4 +102,4 @@
 - **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2025-11-02 22:02:24*
+*Execution completed at: 2025-11-03 22:02:04*
