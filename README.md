@@ -176,98 +176,98 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## 🎯 PlayWhe Analysis Summary
 
 ### 📊 Basic Statistics
-- **Total Draws:** 1,227
-- **Date Range:** 2025-01-01 to 2025-12-31
-- **Data Span:** 364 days
+- **Total Draws:** 1,231
+- **Date Range:** 2025-01-01 to 2026-01-01
+- **Data Span:** 365 days
 - **Average Draws/Day:** 4.0
 - **Confidence Level:** High
 
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| Morning | 307 | 25.0% |
-| Midday | 307 | 25.0% |
-| Afternoon | 307 | 25.0% |
-| Evening | 306 | 24.9% |
+| Morning | 308 | 25.0% |
+| Midday | 308 | 25.0% |
+| Afternoon | 308 | 25.0% |
+| Evening | 307 | 24.9% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 11 | 50 | 34.1 | 🔥 Over |
-| 16 | 50 | 34.1 | 🔥 Over |
-| 31 | 45 | 34.1 | 🔥 Over |
-| 32 | 42 | 34.1 | 🔥 Over |
-| 9 | 42 | 34.1 | 🔥 Over |
+| 11 | 50 | 34.2 | 🔥 Over |
+| 16 | 50 | 34.2 | 🔥 Over |
+| 31 | 45 | 34.2 | 🔥 Over |
+| 9 | 43 | 34.2 | 🔥 Over |
+| 32 | 42 | 34.2 | 🔥 Over |
 
 ### ❄️ Cold Numbers (Least Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 30 | 29 | 34.1 | Normal |
-| 17 | 29 | 34.1 | Normal |
-| 15 | 28 | 34.1 | Normal |
-| 36 | 28 | 34.1 | Normal |
-| 34 | 27 | 34.1 | ❄️ Under |
+| 30 | 29 | 34.2 | Normal |
+| 17 | 29 | 34.2 | Normal |
+| 15 | 28 | 34.2 | Normal |
+| 36 | 28 | 34.2 | Normal |
+| 34 | 27 | 34.2 | ❄️ Under |
 
 ### 📈 Number Analysis
 - **Average Number:** 18.4
 - **Median Number:** 18.0
 - **Standard Deviation:** 10.1
-- **Even Numbers:** 621 (50.6%)
-- **Odd Numbers:** 606 (49.4%)
-- **Low Numbers (1-18):** 628 (51.2%)
-- **High Numbers (19-36):** 599 (48.8%)
+- **Even Numbers:** 623 (50.6%)
+- **Odd Numbers:** 608 (49.4%)
+- **Low Numbers (1-18):** 630 (51.2%)
+- **High Numbers (19-36):** 601 (48.8%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-|  | 429 | 35.0% |
-| Megaball | 215 | 17.5% |
-| Mega Ultra Ball | 137 | 11.2% |
-| Mega Extreme Ball | 104 | 8.5% |
-| Gold Ball | 78 | 6.4% |
-- **Draws with Promo:** 798 (65.0%)
-- **Draws without Promo:** 429 (35.0%)
+|  | 429 | 34.8% |
+| Megaball | 218 | 17.7% |
+| Mega Ultra Ball | 137 | 11.1% |
+| Mega Extreme Ball | 104 | 8.4% |
+| Gold Ball | 79 | 6.4% |
+- **Draws with Promo:** 802 (65.2%)
+- **Draws without Promo:** 429 (34.8%)
 
 ### 🔍 Pattern Analysis
 - **Consecutive Numbers:** 71 (5.8%)
-- **Same Number Repeats:** 35 (2.9%)
-- **Increasing Trends:** 586 (19533.3%)
-- **Decreasing Trends:** 605 (20166.7%)
+- **Same Number Repeats:** 35 (2.8%)
+- **Increasing Trends:** 589 (19633.3%)
+- **Decreasing Trends:** 606 (20200.0%)
 
 ### 🔮 Predictive Insights
-- **Hot Numbers:** 11, 16, 31, 32, 9
+- **Hot Numbers:** 11, 16, 31, 9, 32
 - **Cold Numbers:** 6, 3, 10, 2, 33
-- **Over-Performing:** 11, 16, 31, 32, 9
+- **Over-Performing:** 11, 16, 31, 9, 32
 - **Under-Performing:** 34, 6, 3, 10, 2
 - **Next Predicted Time:** Morning
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 26(2), 19(2), 18(2)
-- **Recent Cold Numbers:** 3(1), 9(1), 2(1)
+- **Recent Hot Numbers:** 18(3), 19(2), 11(2)
+- **Recent Cold Numbers:** 15(1), 2(1), 25(1)
 
 ### 📈 Latest Results
-- **Draw #26440** (2025-12-30) - Afternoon: Mark 18 (Gold Ball, Mega Extreme Ball)
-- **Draw #26441** (2025-12-30) - Evening: Mark 19 (Mega Extreme Ball)
-- **Draw #26442** (2025-12-31) - Morning: Mark 18 (Mega Extreme Ball)
-- **Draw #26443** (2025-12-31) - Midday: Mark 9 (Gold Ball, Megaball)
 - **Draw #26444** (2025-12-31) - Afternoon: Mark 2 (Megaball)
+- **Draw #26445** (2025-12-31) - Evening: Mark 9 (Megaball)
+- **Draw #26446** (2026-01-01) - Morning: Mark 25 (Gold Ball)
+- **Draw #26447** (2026-01-01) - Midday: Mark 18 (Megaball)
+- **Draw #26448** (2026-01-01) - Afternoon: Mark 20 (Megaball)
 
 ---
-*Last updated: 2025-12-31 22:02:14*
+*Last updated: 2026-01-01 22:02:08*
 
 ## 🚀 Execution Summary
 
 ### 📊 Scraping Results
-- **Total Records Processed:** 1,227
+- **Total Records Processed:** 1,231
 - **New Records Added:** 4
-- **Duplicate Records Skipped:** 1223
-- **Execution Time:** 61.12 seconds
-- **Average Processing Speed:** 20.1 records/second
+- **Duplicate Records Skipped:** 1227
+- **Execution Time:** 65.06 seconds
+- **Average Processing Speed:** 18.9 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 1,223
+- **Database Records:** 1,227
 - **Data Completeness:** 100.3% of total database
-- **Date Coverage:** 364 days
+- **Date Coverage:** 365 days
 - **Time Distribution Balance:** 24.9% - 25.0%
 
 ### 📈 Analysis Confidence
@@ -276,4 +276,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2025-12-31 22:02:14*
+*Execution completed at: 2026-01-01 22:02:08*
