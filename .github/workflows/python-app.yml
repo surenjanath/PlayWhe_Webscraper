@@ -43,11 +43,13 @@ jobs:
         PLAYWHE_SID: ${{ secrets.PLAYWHE_SID }}
 
     - name: Clear Old Analysis in README
+      if: github.event_name != 'pull_request'
       run: |
         sed -i '/{{analysis_placeholder}}/q' README.md
       shell: bash
 
     - name: Read Analysis File
+      if: github.event_name != 'pull_request'
       id: read-analysis
       run: |
         echo "analysis<<EOF" >> $GITHUB_OUTPUT
@@ -55,12 +57,14 @@ jobs:
         echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Update README with Analysis
+      if: github.event_name != 'pull_request'
       run: |
         analysis=$(cat analysis_summary.md)
         sed -i "/{{analysis_placeholder}}/r analysis_summary.md" README.md
       shell: bash
 
     - name: Commit and Push
+      if: github.event_name != 'pull_request'
       run: |
         git config --global user.name ${{ secrets.GitName }}
         git config --global user.email ${{ secrets.GitEmail }}
@@ -69,7 +73,7 @@ jobs:
         git add analysis_summary.md
         git diff --cached --quiet && echo "No changes to commit" && exit 0
         git commit -m "Update README with PlayWhe analysis"
-        git pull --rebase
+        git pull --rebase origin main
         git push
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
