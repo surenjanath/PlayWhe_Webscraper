@@ -6,6 +6,8 @@ import os
 import datetime
 from uuid import uuid4
 import warnings
+import logging
+import traceback
 from time import perf_counter
 from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime, Date, ForeignKey, Table
 from sqlalchemy.orm import sessionmaker, relationship
@@ -15,6 +17,14 @@ import numpy as np
 from collections import Counter
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s [%(levelname)s] %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+logger = logging.getLogger(__name__)
 
 MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 YEAR = [str(i) for i in range(2025, datetime.datetime.now().year + 1)]
@@ -78,18 +88,21 @@ class WebScraper:
     async def fetch(self, session, year, month, url):
         # Check if we're within allowed visiting hours
         if not self.check_visit_time():
-            print(f'[*] Outside allowed visiting hours (0600-1000). Current time: {datetime.datetime.now().strftime("%H:%M")}')
+            logger.warning(
+                'Outside allowed visiting hours (0600-1000). Current time: %s',
+                datetime.datetime.now().strftime("%H:%M")
+            )
             return None
-            
+
         # Ensure rate limiting
         while not self.should_respect_rate_limit():
             await asyncio.sleep(1)
-            
+
         params = {
-            'playwhe_month': f'{month}', 
-            'playwhe_year': f'{year}', 
-            'sid':'7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f', 
-            'date_btn':'SEARCH'
+            'playwhe_month': f'{month}',
+            'playwhe_year': f'{year}',
+            'sid': '7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f',
+            'date_btn': 'SEARCH'
         }
         headers = {
             'User-Agent': 'PlayWheScraper/1.0 (Respectful bot following robots.txt guidelines)',
@@ -98,190 +111,266 @@ class WebScraper:
             'Accept-Encoding': 'gzip, deflate',
             'Connection': 'keep-alive',
         }
-           
+
         # Update request tracking
         self.request_count += 1
         self.last_request_time = perf_counter()
-        
+
         retries = 3
         for attempt in range(retries):
             try:
                 async with session.post(url, data=params, headers=headers) as response:
-                    # Save the raw HTML response for debugging
                     response_content = await response.content.read()
-                    # filename = f'response_{month}_{year}.html'
-                    # with open(filename, 'wb') as file:
-                    #     file.write(response_content)
-                    # print(f'[*] Saved response to: {filename}')
 
                     if response.status == 200:
-                        try:
-                            # Decode the raw response content
-                            content = response_content.decode('utf-8', errors='ignore')
-                            
-                            # Parse the HTML with BeautifulSoup
-                            soup = bs(content, 'html.parser')
-                            
-                            results_list = []
-                            
-                            # Look for PlayWhe results table - try multiple selectors
-                            table_selectors = [
-                                'table',  # Generic table
-                                'table.table',  # Bootstrap table
-                                'table.results-table',  # Results table
-                                'table#results',  # Table with id results
-                                '.results table',  # Table within results div
-                                'table[class*="table"]',  # Any table with "table" in class
-                            ]
-                            
-                            html_table = None
-                            for selector in table_selectors:
-                                html_table = soup.select_one(selector)
-                                if html_table:
-                                    print(f'[*] Found table with selector: {selector}')
-                                    break
-                            
-                            if html_table:
-                                # Extract table rows
-                                rows = html_table.find_all('tr')
-                                print(f'[*] Found {len(rows)} table rows')
-                                
-                                for row in rows[1:]:  # Skip header row
-                                    cells = row.find_all(['td', 'th'])
-                                    if len(cells) >= 5:  # Ensure we have enough columns
-                                        try:
-                                            draw_num = cells[0].get_text(strip=True)
-                                            date_str = cells[1].get_text(strip=True)
-                                            time = cells[2].get_text(strip=True)
-                                            mark = cells[3].get_text(strip=True)
-                                            # Handle promo column with div elements
-                                            promo_divs = cells[4].find_all('div')
-                                            if promo_divs:
-                                                promo = ', '.join([div.get_text(strip=True) for div in promo_divs])
-                                            else:
-                                                promo = cells[4].get_text(strip=True)
-                                            
-                                            # Clean and validate data
-                                            if draw_num and date_str and time and mark:
-                                                # Convert date format
-                                                try:
-                                                    # Handle different date formats
-                                                    if '-' in date_str:
-                                                        date_parts = date_str.split('-')
-                                                        if len(date_parts) == 3:
-                                                            day, month_abbr, year_short = date_parts
-                                                            month_num = MONTH.index(month_abbr) + 1
-                                                            year_full = f"20{year_short}" if len(year_short) == 2 else year_short
-                                                            date_obj = datetime.datetime.strptime(f"{day}-{month_num}-{year_full}", "%d-%m-%Y").date()
-                                                        else:
-                                                            date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
-                                                    else:
-                                                        date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
-                                                except:
-                                                    # If date parsing fails, use current date
-                                                    date_obj = datetime.datetime.now().date()
-                                                
-                                                # Convert mark to integer
-                                                try:
-                                                    mark_int = int(mark)
-                                                except:
-                                                    mark_int = 0
-                                                
-                                                results_list.append({
-                                                    'Date': date_obj,
-                                                    'Draw#': draw_num,
-                                                    'Time': time,
-                                                    'Mark': mark_int,
-                                                    'Promo': promo
-                                                })
-                                        except Exception as e:
-                                            print(f'[*] Error parsing row: {e}')
-                                            continue
-                            
-                            # Create DataFrame and check if it's empty
-                            table = pd.DataFrame(results_list)
-                            if table.empty:
-                                print(f'[*] No data found in table for {month}-{year}')
-                                # Try alternative parsing method
-                                table = self.alternative_parsing(content, month, year)
-                            
-                            if not table.empty:
-                                print('[*] Data Scraped : ', params['playwhe_month'], params['playwhe_year'])
-                                return table.to_dict('records')
-                            else:
-                                print(f'[*] No data found for {month}-{year}')
-                                return None
-
-                        except Exception as e:
-                            print(f'[*] Error {e} Occurred : {month}-{year}')
-                            return None
+                        return self._parse_response(response_content, month, year)
                     else:
-                        print(f'[*] Error {response.status} Occurred while fetching data for {month}-{year}')
+                        logger.error(
+                            'HTTP %d for %s-%s', response.status, month, year
+                        )
                         return None
-                        
-            except aiohttp.ClientConnectionError:
+
+            except aiohttp.ClientConnectionError as e:
                 if attempt < retries - 1:
-                    print(f'[*] Connection error occurred. Retrying... Attempt {attempt + 1}/{retries}')
+                    logger.warning(
+                        'Connection error for %s-%s (attempt %d/%d): %s',
+                        month, year, attempt + 1, retries, e
+                    )
                     await asyncio.sleep(2)
                 else:
-                    print('[*] Maximum retries reached. Unable to establish connection.')
+                    logger.error(
+                        'Max retries reached for %s-%s. Last error: %s',
+                        month, year, e
+                    )
                     return None
+            except asyncio.TimeoutError:
+                if attempt < retries - 1:
+                    logger.warning(
+                        'Timeout for %s-%s (attempt %d/%d)',
+                        month, year, attempt + 1, retries
+                    )
+                    await asyncio.sleep(2)
+                else:
+                    logger.error('Max retries reached for %s-%s due to timeout', month, year)
+                    return None
+            except aiohttp.ClientError as e:
+                logger.error(
+                    'Client error fetching %s-%s: %s', month, year, e
+                )
+                return None
+
+    def _parse_response(self, response_content, month, year):
+        """Parse HTML response content and return list of record dicts, or None."""
+        try:
+            content = response_content.decode('utf-8', errors='replace')
+        except (UnicodeDecodeError, AttributeError) as e:
+            logger.error('Failed to decode response for %s-%s: %s', month, year, e)
+            return None
+
+        soup = bs(content, 'html.parser')
+        results_list = []
+
+        # Look for PlayWhe results table - try multiple selectors
+        table_selectors = [
+            'table',
+            'table.table',
+            'table.results-table',
+            'table#results',
+            '.results table',
+            'table[class*="table"]',
+        ]
+
+        html_table = None
+        for selector in table_selectors:
+            html_table = soup.select_one(selector)
+            if html_table:
+                logger.debug('Found table with selector: %s', selector)
+                break
+
+        if html_table:
+            rows = html_table.find_all('tr')
+            logger.info('Found %d table rows for %s-%s', len(rows), month, year)
+
+            for row_idx, row in enumerate(rows[1:], start=2):  # Skip header row
+                cells = row.find_all(['td', 'th'])
+                if len(cells) < 5:
+                    continue
+                try:
+                    record = self._parse_row(cells, month, year, row_idx)
+                    if record:
+                        results_list.append(record)
+                except (ValueError, IndexError) as e:
+                    logger.warning(
+                        'Skipping malformed row %d for %s-%s: %s',
+                        row_idx, month, year, e
+                    )
+                    continue
+
+        table = pd.DataFrame(results_list)
+        if table.empty:
+            logger.info('No data found in primary table for %s-%s, trying alternative', month, year)
+            table = self.alternative_parsing(content, month, year)
+
+        if not table.empty:
+            logger.info('Scraped %d records for %s-%s', len(table), month, year)
+            return table.to_dict('records')
+        else:
+            logger.info('No data found for %s-%s', month, year)
+            return None
+
+    def _parse_row(self, cells, month, year, row_idx):
+        """Parse a single table row into a record dict.
+
+        Raises ValueError if the row contains invalid data that cannot be recovered.
+        Returns None if required fields are empty (row is skipped silently).
+        """
+        draw_num = cells[0].get_text(strip=True)
+        date_str = cells[1].get_text(strip=True)
+        time_val = cells[2].get_text(strip=True)
+        mark = cells[3].get_text(strip=True)
+
+        # Handle promo column with div elements
+        promo_divs = cells[4].find_all('div')
+        if promo_divs:
+            promo = ', '.join([div.get_text(strip=True) for div in promo_divs])
+        else:
+            promo = cells[4].get_text(strip=True)
+
+        if not (draw_num and date_str and time_val and mark):
+            return None
+
+        # Convert date format
+        date_obj = self._parse_date(date_str, month, year, row_idx)
+
+        # Convert mark to integer
+        try:
+            mark_int = int(mark)
+        except ValueError:
+            raise ValueError(
+                f"Non-integer mark value '{mark}' in row {row_idx} for {month}-{year}"
+            )
+
+        return {
+            'Date': date_obj,
+            'Draw#': draw_num,
+            'Time': time_val,
+            'Mark': mark_int,
+            'Promo': promo
+        }
+
+    def _parse_date(self, date_str, month, year, row_idx):
+        """Parse date string into a date object.
+
+        Raises ValueError if the date cannot be parsed in any supported format.
+        """
+        if '-' in date_str:
+            date_parts = date_str.split('-')
+            if len(date_parts) == 3:
+                day, month_abbr, year_short = date_parts
+                try:
+                    month_num = MONTH.index(month_abbr) + 1
+                except ValueError:
+                    raise ValueError(
+                        f"Unknown month abbreviation '{month_abbr}' in date '{date_str}' "
+                        f"(row {row_idx}, {month}-{year})"
+                    )
+                year_full = f"20{year_short}" if len(year_short) == 2 else year_short
+                return datetime.datetime.strptime(
+                    f"{day}-{month_num}-{year_full}", "%d-%m-%Y"
+                ).date()
+            else:
+                return datetime.datetime.strptime(date_str, "%d-%b-%y").date()
+        else:
+            return datetime.datetime.strptime(date_str, "%d-%b-%y").date()
 
     def alternative_parsing(self, content, month, year):
-        """Alternative parsing method if the main method fails"""
+        """Alternative parsing method using regex patterns if the main table method fails."""
+        import re
+
         try:
-            # Try to find any table-like structure
             soup = bs(content, 'html.parser')
-            
-            # Look for any divs or spans that might contain the data
-            results_list = []
-            
-            # Try to find patterns like "Draw# 25218" or similar
             text_content = soup.get_text()
-            
-            # Look for date patterns
-            import re
-            date_pattern = r'(\d{2})-(\w{3})-(\d{2})'
-            dates = re.findall(date_pattern, text_content)
-            
-            # Look for draw number patterns
-            draw_pattern = r'(\d{5})'  # 5-digit draw numbers
-            draws = re.findall(draw_pattern, text_content)
-            
-            # Look for time patterns
-            time_pattern = r'(Morning|Midday|Afternoon|Evening)'
-            times = re.findall(time_pattern, text_content)
-            
-            # Look for number patterns (1-36)
-            number_pattern = r'\b([1-9]|[12]\d|3[0-6])\b'
-            numbers = re.findall(number_pattern, text_content)
-            
-            # Try to match these patterns
-            if dates and draws and times and numbers:
-                for i in range(min(len(dates), len(draws), len(times), len(numbers))):
-                    try:
-                        day, month_abbr, year_short = dates[i]
-                        month_num = MONTH.index(month_abbr) + 1
-                        year_full = f"20{year_short}"
-                        date_obj = datetime.datetime.strptime(f"{day}-{month_num}-{year_full}", "%d-%m-%Y").date()
-                        
-                        results_list.append({
-                            'Date': date_obj,
-                            'Draw#': draws[i],
-                            'Time': times[i],
-                            'Mark': int(numbers[i]),
-                            'Promo': 'Unknown'
-                        })
-                    except:
-                        continue
-            
-            return pd.DataFrame(results_list)
         except Exception as e:
-            print(f'[*] Alternative parsing failed: {e}')
+            logger.error('Alternative parsing: failed to extract text for %s-%s: %s', month, year, e)
             return pd.DataFrame()
 
+        results_list = []
+
+        date_pattern = r'(\d{2})-(\w{3})-(\d{2})'
+        dates = re.findall(date_pattern, text_content)
+
+        draw_pattern = r'(\d{5})'  # 5-digit draw numbers
+        draws = re.findall(draw_pattern, text_content)
+
+        time_pattern = r'(Morning|Midday|Afternoon|Evening)'
+        times = re.findall(time_pattern, text_content)
+
+        number_pattern = r'\b([1-9]|[12]\d|3[0-6])\b'
+        numbers = re.findall(number_pattern, text_content)
+
+        if not (dates and draws and times and numbers):
+            logger.info('Alternative parsing: no pattern matches for %s-%s', month, year)
+            return pd.DataFrame()
+
+        matched_count = 0
+        skipped_count = 0
+        for i in range(min(len(dates), len(draws), len(times), len(numbers))):
+            day, month_abbr, year_short = dates[i]
+            try:
+                month_num = MONTH.index(month_abbr) + 1
+            except ValueError:
+                logger.debug(
+                    'Alternative parsing: unknown month "%s" at index %d for %s-%s',
+                    month_abbr, i, month, year
+                )
+                skipped_count += 1
+                continue
+
+            year_full = f"20{year_short}"
+            try:
+                date_obj = datetime.datetime.strptime(
+                    f"{day}-{month_num}-{year_full}", "%d-%m-%Y"
+                ).date()
+            except ValueError as e:
+                logger.debug(
+                    'Alternative parsing: invalid date at index %d for %s-%s: %s',
+                    i, month, year, e
+                )
+                skipped_count += 1
+                continue
+
+            try:
+                mark_int = int(numbers[i])
+            except ValueError:
+                logger.debug(
+                    'Alternative parsing: non-integer mark "%s" at index %d for %s-%s',
+                    numbers[i], i, month, year
+                )
+                skipped_count += 1
+                continue
+
+            results_list.append({
+                'Date': date_obj,
+                'Draw#': draws[i],
+                'Time': times[i],
+                'Mark': mark_int,
+                'Promo': 'Unknown'
+            })
+            matched_count += 1
+
+        if skipped_count > 0:
+            logger.warning(
+                'Alternative parsing: %d entries skipped due to parse errors for %s-%s',
+                skipped_count, month, year
+            )
+        if matched_count > 0:
+            logger.info('Alternative parsing: extracted %d records for %s-%s', matched_count, month, year)
+
+        return pd.DataFrame(results_list)
+
     async def main(self):
-        async with aiohttp.ClientSession() as session:
+        timeout = aiohttp.ClientTimeout(total=30)
+        async with aiohttp.ClientSession(timeout=timeout) as session:
             current_year = datetime.datetime.now().year
             current_month = datetime.datetime.now().strftime('%b')
             current_month_index = MONTH.index(current_month)
@@ -295,69 +384,110 @@ class WebScraper:
                 if not (int(year) > current_year or (int(year) == current_year and month_index > current_month_index))
             ]
 
-            print(f'[*] Starting PlayWhe scraping with {len(requests_to_make)} requests to process')
-            print(f'[*] Respecting robots.txt: Visit-time 0600-1000, Request-rate 1/5, Crawl-delay 5')
-            
+            logger.info(
+                'Starting PlayWhe scraping with %d requests to process', len(requests_to_make)
+            )
+            logger.info('Respecting robots.txt: Visit-time 0600-1000, Request-rate 1/5, Crawl-delay 5')
+
+            failed_requests = []
             for i, (year, month, url) in enumerate(requests_to_make, 1):
-                print(f'[*] Processing request {i}/{len(requests_to_make)}: {month}-{year}')
-                print(f'[*] URL: {url}')
-                
+                logger.info('Processing request %d/%d: %s-%s', i, len(requests_to_make), month, year)
+
                 data = await self.fetch(session, year, month, url)
                 if data is not None:
                     self.ParsedData.extend(data)
-                    print(f'[*] Successfully scraped {len(data)} records for {month}-{year}')
+                    logger.info('Scraped %d records for %s-%s', len(data), month, year)
                 else:
-                    print(f'[*] No data retrieved for {month}-{year}')
-                
+                    failed_requests.append(f'{month}-{year}')
+                    logger.info('No data retrieved for %s-%s', month, year)
+
                 # Additional delay to ensure we respect the rate limit
                 if i < len(requests_to_make):
-                    print(f'[*] Waiting 5 seconds before next request...')
                     await asyncio.sleep(5)
 
+            if failed_requests:
+                logger.warning(
+                    'Failed to retrieve data for %d request(s): %s',
+                    len(failed_requests), ', '.join(failed_requests[:10])
+                )
+
 def add_playwhe_data_to_db(session, playwhe_data):
-    """Add PlayWhe data to database with duplicate checking"""
+    """Add PlayWhe data to database with duplicate checking.
+
+    Raises:
+        RuntimeError: If the database commit fails after all inserts.
+    """
     added_count = 0
     skipped_count = 0
-    
+    error_count = 0
+
     for data in playwhe_data:
         try:
-            # Check for existing record based on Draw# and Date
             existing_result = session.query(Playwhe_Result).filter_by(
                 DrawNum=data['Draw#'],
                 DrawDate=data['Date']
             ).first()
-            
+
             if existing_result:
                 skipped_count += 1
                 continue
-            else:
-                playwhe_instance = Playwhe_Result(
-                    DrawDate=data['Date'],
-                    DrawNum=data['Draw#'],
-                    Time=data['Time'],
-                    Mark=data['Mark'],
-                    Promo=data['Promo']
-                )
-                session.add(playwhe_instance)
-                added_count += 1
-                
-        except Exception as e:
-            print('[*] Error adding data:', e)
+
+            playwhe_instance = Playwhe_Result(
+                DrawDate=data['Date'],
+                DrawNum=data['Draw#'],
+                Time=data['Time'],
+                Mark=data['Mark'],
+                Promo=data['Promo']
+            )
+            session.add(playwhe_instance)
+            added_count += 1
+
+        except KeyError as e:
+            logger.error('Missing required field %s in record: %s', e, data)
+            error_count += 1
             continue
-    
-    session.commit()
-    print(f'[*] Added {added_count} new records, skipped {skipped_count} duplicates')
+        except Exception as e:
+            logger.error('Unexpected error adding record %s: %s', data, e)
+            error_count += 1
+            continue
+
+    try:
+        session.commit()
+    except Exception as e:
+        session.rollback()
+        logger.critical('Database commit failed, rolled back %d pending inserts: %s', added_count, e)
+        raise RuntimeError(f'Database commit failed: {e}') from e
+
+    logger.info(
+        'Database update: added=%d, skipped=%d, errors=%d', added_count, skipped_count, error_count
+    )
+    if error_count > 0:
+        logger.warning('%d records failed to insert due to data errors', error_count)
+
     return added_count, skipped_count
 
 def comprehensive_analysis(data):
-    """Perform comprehensive analysis on PlayWhe data"""
+    """Perform comprehensive analysis on PlayWhe data.
+
+    Raises:
+        ValueError: If data is empty or cannot be converted to a usable DataFrame.
+    """
     if not data:
-        return "No data available for analysis."
-    
-    # Convert to DataFrame for analysis
+        raise ValueError('No data available for analysis.')
+
     df = pd.DataFrame(data)
     df['Mark'] = pd.to_numeric(df['Mark'], errors='coerce')
     df['Date'] = pd.to_datetime(df['Date'], errors='coerce')
+
+    # Drop rows where critical fields could not be parsed
+    rows_before = len(df)
+    df = df.dropna(subset=['Mark', 'Date'])
+    rows_dropped = rows_before - len(df)
+    if rows_dropped > 0:
+        logger.warning('Dropped %d rows with unparseable Mark/Date values', rows_dropped)
+
+    if df.empty:
+        raise ValueError('All rows had unparseable data; cannot perform analysis.')
     
     # Basic statistics
     basic_stats = {
@@ -563,48 +693,66 @@ async def run_scraper(urls, db_session):
     start_time = perf_counter()
     scraper = WebScraper(urls)
     await scraper.main()
-    
-    if scraper.ParsedData:
-        # Get database counts before adding new data
-        total_db_records = db_session.query(Playwhe_Result).count()
-        
-        # Add data to database and get results
-        new_records_count, duplicate_records_count = add_playwhe_data_to_db(db_session, scraper.ParsedData)
-        
-        # Calculate execution time
-        execution_time = perf_counter() - start_time
-        
-        # Perform comprehensive analysis
+
+    if not scraper.ParsedData:
+        logger.error('No data was scraped. Check the website structure or try again later.')
+        return
+
+    # Get database counts before adding new data
+    total_db_records = db_session.query(Playwhe_Result).count()
+
+    # Add data to database (may raise RuntimeError on commit failure)
+    new_records_count, duplicate_records_count = add_playwhe_data_to_db(db_session, scraper.ParsedData)
+
+    execution_time = perf_counter() - start_time
+
+    # Perform comprehensive analysis
+    try:
         analysis_results = comprehensive_analysis(scraper.ParsedData)
-        
-        # Get latest entries for the report
-        latest_entries = scraper.ParsedData[-10:] if len(scraper.ParsedData) >= 10 else scraper.ParsedData
-        
-        # Generate Markdown summary for README
+    except ValueError as e:
+        logger.error('Analysis failed: %s', e)
+        logger.info('Scraping completed but analysis could not run. Data was still saved to DB.')
+        return
+
+    latest_entries = scraper.ParsedData[-10:] if len(scraper.ParsedData) >= 10 else scraper.ParsedData
+
+    # Generate Markdown summary for README
+    try:
         markdown_summary = generate_markdown_summary(analysis_results, latest_entries)
-        
-        # Write Markdown summary to file for GitHub Actions
+    except (KeyError, TypeError, ZeroDivisionError) as e:
+        logger.error('Failed to generate markdown summary: %s', e)
+        return
+
+    try:
         with open('analysis_summary.md', 'w', encoding='utf-8') as file:
             file.write(markdown_summary)
-        
-        # Generate execution summary
-        execution_summary = f"""
-## 🚀 Execution Summary
+    except OSError as e:
+        logger.error('Failed to write analysis_summary.md: %s', e)
+        return
 
-### 📊 Scraping Results
+    # Avoid division by zero if total_db_records is 0
+    db_completeness = (
+        f"{len(scraper.ParsedData) / total_db_records * 100:.1f}%"
+        if total_db_records > 0 else 'N/A (empty database)'
+    )
+
+    execution_summary = f"""
+## Execution Summary
+
+### Scraping Results
 - **Total Records Processed:** {len(scraper.ParsedData):,}
 - **New Records Added:** {new_records_count}
 - **Duplicate Records Skipped:** {duplicate_records_count}
 - **Execution Time:** {execution_time:.2f} seconds
 - **Average Processing Speed:** {len(scraper.ParsedData)/execution_time:.1f} records/second
 
-### 🔍 Data Quality
+### Data Quality
 - **Database Records:** {total_db_records:,}
-- **Data Completeness:** {len(scraper.ParsedData)/total_db_records*100:.1f}% of total database
+- **Data Completeness:** {db_completeness} of total database
 - **Date Coverage:** {analysis_results['basic_stats']['data_span_days']} days
 - **Time Distribution Balance:** {min(analysis_results['time_analysis']['time_balance'].values()):.1f}% - {max(analysis_results['time_analysis']['time_balance'].values()):.1f}%
 
-### 📈 Analysis Confidence
+### Analysis Confidence
 - **Confidence Level:** {analysis_results['predictions']['confidence_level']}
 - **Statistical Significance:** {'High' if analysis_results['basic_stats']['total_draws'] > 500 else 'Medium' if analysis_results['basic_stats']['total_draws'] > 200 else 'Low'}
 - **Pattern Reliability:** {'Strong' if analysis_results['patterns']['consecutive_percentage'] < 10 else 'Moderate'}
@@ -612,50 +760,48 @@ async def run_scraper(urls, db_session):
 ---
 *Execution completed at: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}*
 """
-        
-        # Append execution summary to markdown file
+
+    try:
         with open('analysis_summary.md', 'a', encoding='utf-8') as file:
             file.write(execution_summary)
-        
-        print("✅ Enhanced analysis report generated successfully.")
-        print(f"📊 Total records processed: {len(scraper.ParsedData):,}")
-        print(f"📋 Summary saved to: analysis_summary.md")
-    else:
-        print("❌ No data was scraped. Please check the website structure or try again later.")
+    except OSError as e:
+        logger.error('Failed to append execution summary: %s', e)
+
+    logger.info('Analysis report generated successfully.')
+    logger.info('Total records processed: %d', len(scraper.ParsedData))
+    logger.info('Summary saved to: analysis_summary.md')
 
 if __name__ == "__main__":
     start = perf_counter()
-    
+
     # Check if we're within allowed visiting hours before starting
     current_hour = datetime.datetime.now().hour
     if not (6 <= current_hour < 10):
-        print(f'[*] WARNING: Current time is {datetime.datetime.now().strftime("%H:%M")}')
-        print('[*] Robots.txt specifies Visit-time: 0600-1000')
-        print('[*] Consider running during allowed hours to avoid potential issues')
-        print('[*] Continuing anyway for testing purposes...')
-        # response = input('[*] Continue anyway? (y/N): ')
-        # if response.lower() != 'y':
-        #     print('[*] Exiting...')
-        #     exit()
-    
-    # Updated URL for PlayWhe results
+        logger.warning(
+            'Current time is %s. Robots.txt specifies Visit-time: 0600-1000. '
+            'Continuing anyway for testing purposes.',
+            datetime.datetime.now().strftime("%H:%M")
+        )
+
     urls = ['https://www.nlcbplaywhelotto.com/nlcb-play-whe-results/']
-    
+
     engine = create_engine(f'sqlite:///{Database}', echo=False)
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     db_session = Session()
-    
+
     try:
         asyncio.run(run_scraper(urls, db_session))
-        print('[*] Adding Data to Database ... ')
-
+    except RuntimeError as e:
+        logger.critical('Fatal database error: %s', e)
+    except aiohttp.ClientError as e:
+        logger.critical('Fatal network error: %s', e)
+    except KeyboardInterrupt:
+        logger.info('Scraper interrupted by user.')
     except Exception as e:
-        print('*'*100)
-        print(f'Error Occurred : {e}')
-        print('*'*100)
+        logger.critical('Unexpected error: %s\n%s', e, traceback.format_exc())
     finally:
         db_session.close()
 
     stop = perf_counter()
-    print("[*] Time taken : ", stop - start)
+    logger.info('Total execution time: %.2f seconds', stop - start)
