@@ -1,8 +1,8 @@
-aiohttp
-bs4
-requests
-SQLAlchemy
-pandas
-lxml
-html5lib
-numpy
+aiohttp>=3.11,<4
+beautifulsoup4>=4.12,<5
+requests>=2.31,<3
+SQLAlchemy>=2.0,<3
+pandas>=2.0,<4
+lxml>=5.0,<7
+html5lib>=1.1,<2
+numpy>=1.26,<3
