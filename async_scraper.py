@@ -1,60 +1,20 @@
 import asyncio
 import aiohttp
 import pandas as pd
-from io import StringIO
-import os
 import datetime
-from uuid import uuid4
 import warnings
 from time import perf_counter
-from sqlalchemy import create_engine, Column, Integer, String, Float, Text, DateTime, Date, ForeignKey, Table
-from sqlalchemy.orm import sessionmaker, relationship
-from sqlalchemy.orm import declarative_base
 from bs4 import BeautifulSoup as bs
 import numpy as np
-from collections import Counter
+
+from config import (
+    MONTH, YEAR, PLAYWHE_URL, CRAWL_DELAY_SECONDS,
+    MAX_RETRIES, HTTP_HEADERS, build_search_params,
+)
+from utils import parse_draw_date, safe_int, is_within_visit_hours, extract_patterns
+from db import PlaywheResult, get_engine, get_session, add_playwhe_data
 
 warnings.simplefilter(action='ignore', category=FutureWarning)
-
-MONTH = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-YEAR = [str(i) for i in range(2025, datetime.datetime.now().year + 1)]
-
-cwd = os.getcwd()
-Database_Name = 'PlayWhe_Results_Database.db'
-Location = r'Database'
-WorkingDir = os.path.join(cwd, Location)
-if not os.path.exists(WorkingDir):
-    os.mkdir(WorkingDir)
-
-Database = os.path.join(WorkingDir, Database_Name)
-
-Base = declarative_base()
-
-class Playwhe_Result(Base):
-    __tablename__ = 'playwhe_data'
-
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    DrawDate = Column(Date)
-    DrawNum = Column(String)
-    Time = Column(String)  # Morning, Midday, Afternoon, Evening
-    Mark = Column(Integer)  # The winning number (1-36)
-    Promo = Column(String)  # Gold Ball, Megaball, Mega Extreme Ball, etc.
-    uniqueId = Column(String)
-    last_updated = Column(DateTime)
-    date_created = Column(DateTime)
-
-    def __init__(self, DrawDate, DrawNum, Time, Mark, Promo):
-        self.DrawDate = DrawDate
-        self.DrawNum = DrawNum
-        self.Time = Time
-        self.Mark = Mark
-        self.Promo = Promo
-        self.uniqueId = str(uuid4()).split('-')[4]
-        self.date_created = datetime.datetime.now()
-        self.last_updated = datetime.datetime.now()
-
-    def __repr__(self):
-        return f"<Playwhe_Result(DrawDate='{self.DrawDate}', Time='{self.Time}', Mark={self.Mark}')>"
 
 class WebScraper:
     def __init__(self, urls):
@@ -63,50 +23,27 @@ class WebScraper:
         self.request_count = 0
         self.last_request_time = 0
         
-    def check_visit_time(self):
-        """Check if current time is within allowed visiting hours (0600-1000)"""
-        current_hour = datetime.datetime.now().hour
-        return True  # Temporarily allow all times for testing
-        
     def should_respect_rate_limit(self):
         """Ensure we don't exceed 1 request per 5 seconds"""
         current_time = perf_counter()
-        if current_time - self.last_request_time < 5:
+        if current_time - self.last_request_time < CRAWL_DELAY_SECONDS:
             return False
         return True
 
     async def fetch(self, session, year, month, url):
-        # Check if we're within allowed visiting hours
-        if not self.check_visit_time():
-            print(f'[*] Outside allowed visiting hours (0600-1000). Current time: {datetime.datetime.now().strftime("%H:%M")}')
-            return None
-            
         # Ensure rate limiting
         while not self.should_respect_rate_limit():
             await asyncio.sleep(1)
-            
-        params = {
-            'playwhe_month': f'{month}', 
-            'playwhe_year': f'{year}', 
-            'sid':'7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f', 
-            'date_btn':'SEARCH'
-        }
-        headers = {
-            'User-Agent': 'PlayWheScraper/1.0 (Respectful bot following robots.txt guidelines)',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'en-US,en;q=0.5',
-            'Accept-Encoding': 'gzip, deflate',
-            'Connection': 'keep-alive',
-        }
+
+        params = build_search_params(month, year)
            
         # Update request tracking
         self.request_count += 1
         self.last_request_time = perf_counter()
-        
-        retries = 3
-        for attempt in range(retries):
+
+        for attempt in range(MAX_RETRIES):
             try:
-                async with session.post(url, data=params, headers=headers) as response:
+                async with session.post(url, data=params, headers=HTTP_HEADERS) as response:
                     # Save the raw HTML response for debugging
                     response_content = await response.content.read()
                     # filename = f'response_{month}_{year}.html'
@@ -124,79 +61,10 @@ class WebScraper:
                             
                             results_list = []
                             
-                            # Look for PlayWhe results table - try multiple selectors
-                            table_selectors = [
-                                'table',  # Generic table
-                                'table.table',  # Bootstrap table
-                                'table.results-table',  # Results table
-                                'table#results',  # Table with id results
-                                '.results table',  # Table within results div
-                                'table[class*="table"]',  # Any table with "table" in class
-                            ]
-                            
-                            html_table = None
-                            for selector in table_selectors:
-                                html_table = soup.select_one(selector)
-                                if html_table:
-                                    print(f'[*] Found table with selector: {selector}')
-                                    break
+                            html_table = self._find_results_table(soup)
                             
                             if html_table:
-                                # Extract table rows
-                                rows = html_table.find_all('tr')
-                                print(f'[*] Found {len(rows)} table rows')
-                                
-                                for row in rows[1:]:  # Skip header row
-                                    cells = row.find_all(['td', 'th'])
-                                    if len(cells) >= 5:  # Ensure we have enough columns
-                                        try:
-                                            draw_num = cells[0].get_text(strip=True)
-                                            date_str = cells[1].get_text(strip=True)
-                                            time = cells[2].get_text(strip=True)
-                                            mark = cells[3].get_text(strip=True)
-                                            # Handle promo column with div elements
-                                            promo_divs = cells[4].find_all('div')
-                                            if promo_divs:
-                                                promo = ', '.join([div.get_text(strip=True) for div in promo_divs])
-                                            else:
-                                                promo = cells[4].get_text(strip=True)
-                                            
-                                            # Clean and validate data
-                                            if draw_num and date_str and time and mark:
-                                                # Convert date format
-                                                try:
-                                                    # Handle different date formats
-                                                    if '-' in date_str:
-                                                        date_parts = date_str.split('-')
-                                                        if len(date_parts) == 3:
-                                                            day, month_abbr, year_short = date_parts
-                                                            month_num = MONTH.index(month_abbr) + 1
-                                                            year_full = f"20{year_short}" if len(year_short) == 2 else year_short
-                                                            date_obj = datetime.datetime.strptime(f"{day}-{month_num}-{year_full}", "%d-%m-%Y").date()
-                                                        else:
-                                                            date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
-                                                    else:
-                                                        date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
-                                                except:
-                                                    # If date parsing fails, use current date
-                                                    date_obj = datetime.datetime.now().date()
-                                                
-                                                # Convert mark to integer
-                                                try:
-                                                    mark_int = int(mark)
-                                                except:
-                                                    mark_int = 0
-                                                
-                                                results_list.append({
-                                                    'Date': date_obj,
-                                                    'Draw#': draw_num,
-                                                    'Time': time,
-                                                    'Mark': mark_int,
-                                                    'Promo': promo
-                                                })
-                                        except Exception as e:
-                                            print(f'[*] Error parsing row: {e}')
-                                            continue
+                                results_list = self._parse_table_rows(html_table)
                             
                             # Create DataFrame and check if it's empty
                             table = pd.DataFrame(results_list)
@@ -220,61 +88,91 @@ class WebScraper:
                         return None
                         
             except aiohttp.ClientConnectionError:
-                if attempt < retries - 1:
-                    print(f'[*] Connection error occurred. Retrying... Attempt {attempt + 1}/{retries}')
+                if attempt < MAX_RETRIES - 1:
+                    print(f'[*] Connection error occurred. Retrying... Attempt {attempt + 1}/{MAX_RETRIES}')
                     await asyncio.sleep(2)
                 else:
                     print('[*] Maximum retries reached. Unable to establish connection.')
                     return None
 
+    @staticmethod
+    def _find_results_table(soup):
+        """Try several CSS selectors to locate the results table."""
+        selectors = [
+            'table', 'table.table', 'table.results-table',
+            'table#results', '.results table', 'table[class*="table"]',
+        ]
+        for selector in selectors:
+            table = soup.select_one(selector)
+            if table:
+                print(f'[*] Found table with selector: {selector}')
+                return table
+        return None
+
+    @staticmethod
+    def _parse_table_rows(html_table):
+        """Extract result dicts from an HTML <table> element."""
+        results = []
+        rows = html_table.find_all('tr')
+        print(f'[*] Found {len(rows)} table rows')
+
+        for row in rows[1:]:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) < 5:
+                continue
+            try:
+                draw_num = cells[0].get_text(strip=True)
+                date_str = cells[1].get_text(strip=True)
+                time_val = cells[2].get_text(strip=True)
+                mark_str = cells[3].get_text(strip=True)
+
+                promo_divs = cells[4].find_all('div')
+                promo = (
+                    ', '.join(d.get_text(strip=True) for d in promo_divs)
+                    if promo_divs
+                    else cells[4].get_text(strip=True)
+                )
+
+                if draw_num and date_str and time_val and mark_str:
+                    results.append({
+                        'Date': parse_draw_date(date_str),
+                        'Draw#': draw_num,
+                        'Time': time_val,
+                        'Mark': safe_int(mark_str),
+                        'Promo': promo,
+                    })
+            except Exception as e:
+                print(f'[*] Error parsing row: {e}')
+                continue
+        return results
+
     def alternative_parsing(self, content, month, year):
         """Alternative parsing method if the main method fails"""
         try:
-            # Try to find any table-like structure
             soup = bs(content, 'html.parser')
-            
-            # Look for any divs or spans that might contain the data
-            results_list = []
-            
-            # Try to find patterns like "Draw# 25218" or similar
             text_content = soup.get_text()
-            
-            # Look for date patterns
-            import re
-            date_pattern = r'(\d{2})-(\w{3})-(\d{2})'
-            dates = re.findall(date_pattern, text_content)
-            
-            # Look for draw number patterns
-            draw_pattern = r'(\d{5})'  # 5-digit draw numbers
-            draws = re.findall(draw_pattern, text_content)
-            
-            # Look for time patterns
-            time_pattern = r'(Morning|Midday|Afternoon|Evening)'
-            times = re.findall(time_pattern, text_content)
-            
-            # Look for number patterns (1-36)
-            number_pattern = r'\b([1-9]|[12]\d|3[0-6])\b'
-            numbers = re.findall(number_pattern, text_content)
-            
-            # Try to match these patterns
+            matches = extract_patterns(text_content)
+
+            dates = matches['dates']
+            draws = matches['draws']
+            times = matches['times']
+            numbers = matches['numbers']
+
+            results_list = []
             if dates and draws and times and numbers:
                 for i in range(min(len(dates), len(draws), len(times), len(numbers))):
                     try:
-                        day, month_abbr, year_short = dates[i]
-                        month_num = MONTH.index(month_abbr) + 1
-                        year_full = f"20{year_short}"
-                        date_obj = datetime.datetime.strptime(f"{day}-{month_num}-{year_full}", "%d-%m-%Y").date()
-                        
+                        date_str = '-'.join(dates[i])
                         results_list.append({
-                            'Date': date_obj,
+                            'Date': parse_draw_date(date_str),
                             'Draw#': draws[i],
                             'Time': times[i],
-                            'Mark': int(numbers[i]),
-                            'Promo': 'Unknown'
+                            'Mark': safe_int(numbers[i]),
+                            'Promo': 'Unknown',
                         })
-                    except:
+                    except Exception:
                         continue
-            
+
             return pd.DataFrame(results_list)
         except Exception as e:
             print(f'[*] Alternative parsing failed: {e}')
@@ -296,7 +194,7 @@ class WebScraper:
             ]
 
             print(f'[*] Starting PlayWhe scraping with {len(requests_to_make)} requests to process')
-            print(f'[*] Respecting robots.txt: Visit-time 0600-1000, Request-rate 1/5, Crawl-delay 5')
+            print(f'[*] Respecting robots.txt: Visit-time 0600-1000, Request-rate 1/{CRAWL_DELAY_SECONDS}, Crawl-delay {CRAWL_DELAY_SECONDS}')
             
             for i, (year, month, url) in enumerate(requests_to_make, 1):
                 print(f'[*] Processing request {i}/{len(requests_to_make)}: {month}-{year}')
@@ -311,43 +209,9 @@ class WebScraper:
                 
                 # Additional delay to ensure we respect the rate limit
                 if i < len(requests_to_make):
-                    print(f'[*] Waiting 5 seconds before next request...')
-                    await asyncio.sleep(5)
+                    print(f'[*] Waiting {CRAWL_DELAY_SECONDS} seconds before next request...')
+                    await asyncio.sleep(CRAWL_DELAY_SECONDS)
 
-def add_playwhe_data_to_db(session, playwhe_data):
-    """Add PlayWhe data to database with duplicate checking"""
-    added_count = 0
-    skipped_count = 0
-    
-    for data in playwhe_data:
-        try:
-            # Check for existing record based on Draw# and Date
-            existing_result = session.query(Playwhe_Result).filter_by(
-                DrawNum=data['Draw#'],
-                DrawDate=data['Date']
-            ).first()
-            
-            if existing_result:
-                skipped_count += 1
-                continue
-            else:
-                playwhe_instance = Playwhe_Result(
-                    DrawDate=data['Date'],
-                    DrawNum=data['Draw#'],
-                    Time=data['Time'],
-                    Mark=data['Mark'],
-                    Promo=data['Promo']
-                )
-                session.add(playwhe_instance)
-                added_count += 1
-                
-        except Exception as e:
-            print('[*] Error adding data:', e)
-            continue
-    
-    session.commit()
-    print(f'[*] Added {added_count} new records, skipped {skipped_count} duplicates')
-    return added_count, skipped_count
 
 def comprehensive_analysis(data):
     """Perform comprehensive analysis on PlayWhe data"""
@@ -566,10 +430,10 @@ async def run_scraper(urls, db_session):
     
     if scraper.ParsedData:
         # Get database counts before adding new data
-        total_db_records = db_session.query(Playwhe_Result).count()
-        
+        total_db_records = db_session.query(PlaywheResult).count()
+
         # Add data to database and get results
-        new_records_count, duplicate_records_count = add_playwhe_data_to_db(db_session, scraper.ParsedData)
+        new_records_count, duplicate_records_count = add_playwhe_data(db_session, scraper.ParsedData)
         
         # Calculate execution time
         execution_time = perf_counter() - start_time
@@ -626,25 +490,16 @@ async def run_scraper(urls, db_session):
 if __name__ == "__main__":
     start = perf_counter()
     
-    # Check if we're within allowed visiting hours before starting
-    current_hour = datetime.datetime.now().hour
-    if not (6 <= current_hour < 10):
+    if not is_within_visit_hours():
         print(f'[*] WARNING: Current time is {datetime.datetime.now().strftime("%H:%M")}')
         print('[*] Robots.txt specifies Visit-time: 0600-1000')
         print('[*] Consider running during allowed hours to avoid potential issues')
         print('[*] Continuing anyway for testing purposes...')
-        # response = input('[*] Continue anyway? (y/N): ')
-        # if response.lower() != 'y':
-        #     print('[*] Exiting...')
-        #     exit()
     
-    # Updated URL for PlayWhe results
-    urls = ['https://www.nlcbplaywhelotto.com/nlcb-play-whe-results/']
-    
-    engine = create_engine(f'sqlite:///{Database}', echo=False)
-    Base.metadata.create_all(engine)
-    Session = sessionmaker(bind=engine)
-    db_session = Session()
+    urls = [PLAYWHE_URL]
+
+    engine = get_engine()
+    db_session = get_session(engine)
     
     try:
         asyncio.run(run_scraper(urls, db_session))
