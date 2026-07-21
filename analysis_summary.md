@@ -2,63 +2,63 @@
 ## 🎯 PlayWhe Analysis Summary
 
 ### 📊 Basic Statistics
-- **Total Draws:** 1,987
-- **Date Range:** 2025-01-01 to 2026-07-20
-- **Data Span:** 565 days
+- **Total Draws:** 1,991
+- **Date Range:** 2025-01-01 to 2026-07-21
+- **Data Span:** 566 days
 - **Average Draws/Day:** 4.0
 - **Confidence Level:** High
 
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| Morning | 497 | 25.0% |
-| Midday | 497 | 25.0% |
-| Afternoon | 497 | 25.0% |
-| Evening | 496 | 25.0% |
+| Morning | 498 | 25.0% |
+| Midday | 498 | 25.0% |
+| Afternoon | 498 | 25.0% |
+| Evening | 497 | 25.0% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 16 | 78 | 55.2 | 🔥 Over |
-| 11 | 70 | 55.2 | 🔥 Over |
-| 18 | 66 | 55.2 | Normal |
-| 9 | 65 | 55.2 | Normal |
-| 31 | 65 | 55.2 | Normal |
+| 16 | 78 | 55.3 | 🔥 Over |
+| 11 | 70 | 55.3 | 🔥 Over |
+| 18 | 66 | 55.3 | Normal |
+| 9 | 65 | 55.3 | Normal |
+| 31 | 65 | 55.3 | Normal |
 
 ### ❄️ Cold Numbers (Least Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 17 | 51 | 55.2 | Normal |
-| 36 | 48 | 55.2 | Normal |
-| 27 | 48 | 55.2 | Normal |
-| 14 | 47 | 55.2 | Normal |
-| 15 | 45 | 55.2 | Normal |
+| 17 | 51 | 55.3 | Normal |
+| 36 | 48 | 55.3 | Normal |
+| 27 | 48 | 55.3 | Normal |
+| 14 | 47 | 55.3 | Normal |
+| 15 | 46 | 55.3 | Normal |
 
 ### 📈 Number Analysis
 - **Average Number:** 18.6
 - **Median Number:** 18.0
 - **Standard Deviation:** 10.1
-- **Even Numbers:** 996 (50.1%)
-- **Odd Numbers:** 991 (49.9%)
-- **Low Numbers (1-18):** 996 (50.1%)
-- **High Numbers (19-36):** 991 (49.9%)
+- **Even Numbers:** 996 (50.0%)
+- **Odd Numbers:** 995 (50.0%)
+- **Low Numbers (1-18):** 998 (50.1%)
+- **High Numbers (19-36):** 993 (49.9%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-|  | 628 | 31.6% |
-| Megaball | 314 | 15.8% |
+|  | 629 | 31.6% |
+| Megaball | 316 | 15.9% |
 | Mega Ultra Ball | 199 | 10.0% |
 | Mega Extreme Ball | 149 | 7.5% |
 | Mega Bonus Ball | 104 | 5.2% |
-- **Draws with Promo:** 1359 (68.4%)
-- **Draws without Promo:** 628 (31.6%)
+- **Draws with Promo:** 1362 (68.4%)
+- **Draws without Promo:** 629 (31.6%)
 
 ### 🔍 Pattern Analysis
 - **Consecutive Numbers:** 120 (6.0%)
 - **Same Number Repeats:** 52 (2.6%)
-- **Increasing Trends:** 950 (31666.7%)
-- **Decreasing Trends:** 984 (32800.0%)
+- **Increasing Trends:** 953 (31766.7%)
+- **Decreasing Trends:** 985 (32833.3%)
 
 ### 🔮 Predictive Insights
 - **Hot Numbers:** 16, 11, 18, 9, 31
@@ -68,32 +68,32 @@
 - **Next Predicted Time:** Morning
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 35(2), 14(2), 30(2)
-- **Recent Cold Numbers:** 19(1), 25(1), 34(1)
+- **Recent Hot Numbers:** 30(2), 2(2), 25(2)
+- **Recent Cold Numbers:** 34(1), 13(1), 15(1)
 
 ### 📈 Latest Results
-- **Draw #27200** (2026-07-19) - Afternoon: Mark 2 
-- **Draw #27201** (2026-07-19) - Evening: Mark 17 (Mega Extreme Ball)
-- **Draw #27202** (2026-07-20) - Morning: Mark 19 (Mega Extreme Ball)
-- **Draw #27203** (2026-07-20) - Midday: Mark 25 (Mega Bonus Ball)
 - **Draw #27204** (2026-07-20) - Afternoon: Mark 34 
+- **Draw #27205** (2026-07-20) - Evening: Mark 13 (Megaball)
+- **Draw #27206** (2026-07-21) - Morning: Mark 15 
+- **Draw #27207** (2026-07-21) - Midday: Mark 25 (Mega Bonus Ball, Mega Bonus Ball, Mega Extreme Ball)
+- **Draw #27208** (2026-07-21) - Afternoon: Mark 29 (Megaball)
 
 ---
-*Last updated: 2026-07-20 22:44:12*
+*Last updated: 2026-07-21 22:42:55*
 
 ## 🚀 Execution Summary
 
 ### 📊 Scraping Results
-- **Total Records Processed:** 1,987
+- **Total Records Processed:** 1,991
 - **New Records Added:** 4
-- **Duplicate Records Skipped:** 1983
-- **Execution Time:** 95.58 seconds
-- **Average Processing Speed:** 20.8 records/second
+- **Duplicate Records Skipped:** 1987
+- **Execution Time:** 101.37 seconds
+- **Average Processing Speed:** 19.6 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 1,983
+- **Database Records:** 1,987
 - **Data Completeness:** 100.2% of total database
-- **Date Coverage:** 565 days
+- **Date Coverage:** 566 days
 - **Time Distribution Balance:** 25.0% - 25.0%
 
 ### 📈 Analysis Confidence
@@ -102,4 +102,4 @@
 - **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2026-07-20 22:44:12*
+*Execution completed at: 2026-07-21 22:42:55*
