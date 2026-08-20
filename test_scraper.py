@@ -44,7 +44,7 @@ async def test_form_submission():
     params = {
         'playwhe_month': 'Jan',
         'playwhe_year': '2025',
-        'sid': '7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f',
+        'sid': os.environ.get('PLAYWHE_SID', ''),
         'date_btn': 'SEARCH'
     }
     
