@@ -65,8 +65,10 @@ class WebScraper:
         
     def check_visit_time(self):
         """Check if current time is within allowed visiting hours (0600-1000)"""
+        if os.environ.get('ALLOW_OUTSIDE_HOURS', '').lower() == 'true':
+            return True
         current_hour = datetime.datetime.now().hour
-        return True  # Temporarily allow all times for testing
+        return 6 <= current_hour < 10
         
     def should_respect_rate_limit(self):
         """Ensure we don't exceed 1 request per 5 seconds"""
@@ -88,7 +90,7 @@ class WebScraper:
         params = {
             'playwhe_month': f'{month}', 
             'playwhe_year': f'{year}', 
-            'sid':'7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f', 
+            'sid': os.environ.get('PLAYWHE_SID', ''), 
             'date_btn':'SEARCH'
         }
         headers = {
@@ -177,14 +179,15 @@ class WebScraper:
                                                             date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
                                                     else:
                                                         date_obj = datetime.datetime.strptime(date_str, "%d-%b-%y").date()
-                                                except:
-                                                    # If date parsing fails, use current date
+                                                except (ValueError, IndexError) as e:
+                                                    print(f'[*] Date parsing failed for "{date_str}": {e}')
                                                     date_obj = datetime.datetime.now().date()
                                                 
                                                 # Convert mark to integer
                                                 try:
                                                     mark_int = int(mark)
-                                                except:
+                                                except (ValueError, TypeError) as e:
+                                                    print(f'[*] Mark parsing failed for "{mark}": {e}')
                                                     mark_int = 0
                                                 
                                                 results_list.append({
@@ -272,7 +275,8 @@ class WebScraper:
                             'Mark': int(numbers[i]),
                             'Promo': 'Unknown'
                         })
-                    except:
+                    except (ValueError, IndexError) as e:
+                        print(f'[*] Alternative parsing row failed: {e}')
                         continue
             
             return pd.DataFrame(results_list)
