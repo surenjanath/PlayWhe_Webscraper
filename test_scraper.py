@@ -7,18 +7,18 @@ Run this to test the scraper functionality
 import asyncio
 import aiohttp
 from bs4 import BeautifulSoup as bs
-import datetime
 import os
+
+from config import PLAYWHE_URL, HTTP_HEADERS, build_search_params
+from utils import extract_patterns
 
 async def test_website_connectivity():
     """Test if we can connect to the PlayWhe website"""
     print("🔍 Testing website connectivity...")
     
-    url = 'https://www.nlcbplaywhelotto.com/nlcb-play-whe-results/'
-    
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.get(url) as response:
+            async with session.get(PLAYWHE_URL) as response:
                 print(f"✅ Website accessible - Status: {response.status}")
                 content = await response.text()
                 print(f"📄 Content length: {len(content)} characters")
@@ -38,27 +38,11 @@ async def test_form_submission():
     """Test if we can submit the search form"""
     print("\n🔍 Testing form submission...")
     
-    url = 'https://www.nlcbplaywhelotto.com/nlcb-play-whe-results/'
-    
-    # Test parameters for January 2025
-    params = {
-        'playwhe_month': 'Jan',
-        'playwhe_year': '2025',
-        'sid': '7bdb0e5bd65120db4a046487d5ba59b90b243ecb69127964ca720d0be9473e4f',
-        'date_btn': 'SEARCH'
-    }
-    
-    headers = {
-        'User-Agent': 'PlayWheScraper/1.0 (Test bot)',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'en-US,en;q=0.5',
-        'Accept-Encoding': 'gzip, deflate',
-        'Connection': 'keep-alive',
-    }
+    params = build_search_params('Jan', '2025')
     
     try:
         async with aiohttp.ClientSession() as session:
-            async with session.post(url, data=params, headers=headers) as response:
+            async with session.post(PLAYWHE_URL, data=params, headers=HTTP_HEADERS) as response:
                 print(f"✅ Form submission successful - Status: {response.status}")
                 content = await response.text()
                 
@@ -99,30 +83,11 @@ def test_data_parsing():
         with open('test_response.html', 'r', encoding='utf-8') as f:
             content = f.read()
         
-        soup = bs(content, 'html.parser')
-        
-        # Look for PlayWhe data patterns
-        import re
-        
-        # Look for draw numbers
-        draw_pattern = r'(\d{5})'
-        draws = re.findall(draw_pattern, content)
-        print(f"📊 Found {len(draws)} potential draw numbers")
-        
-        # Look for time patterns
-        time_pattern = r'(Morning|Midday|Afternoon|Evening)'
-        times = re.findall(time_pattern, content)
-        print(f"⏰ Found {len(times)} time references")
-        
-        # Look for number patterns (1-36)
-        number_pattern = r'\b([1-9]|[12]\d|3[0-6])\b'
-        numbers = re.findall(number_pattern, content)
-        print(f"🎲 Found {len(numbers)} potential mark numbers")
-        
-        # Look for promo patterns
-        promo_pattern = r'(Gold Ball|Megaball|Mega Ultra Ball|Mega Extreme Ball)'
-        promos = re.findall(promo_pattern, content)
-        print(f"⭐ Found {len(promos)} promo references")
+        matches = extract_patterns(content)
+        print(f"📊 Found {len(matches['draws'])} potential draw numbers")
+        print(f"⏰ Found {len(matches['times'])} time references")
+        print(f"🎲 Found {len(matches['numbers'])} potential mark numbers")
+        print(f"⭐ Found {len(matches['promos'])} promo references")
         
         print("\n✅ Data parsing test completed successfully!")
         
