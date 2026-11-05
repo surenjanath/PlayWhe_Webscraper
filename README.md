@@ -177,7 +177,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ### 📊 Basic Statistics
 - **Total Draws:** 161
-- **Date Range:** 2026-11-04 to 2026-11-04
+- **Date Range:** 2026-11-05 to 2026-11-05
 - **Data Span:** 0 days
 - **Average Draws/Day:** 161.0
 - **Confidence Level:** Low
@@ -185,78 +185,78 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| 7 | 23 | 14.3% |
-| 2 | 23 | 14.3% |
+| 33 | 23 | 14.3% |
 | 14 | 23 | 14.3% |
-| 36 | 23 | 14.3% |
+| 13 | 23 | 14.3% |
 | 1 | 23 | 14.3% |
-| 11 | 23 | 14.3% |
-| 21 | 23 | 14.3% |
+| 34 | 23 | 14.3% |
+| 24 | 23 | 14.3% |
+| 6 | 23 | 14.3% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 28 | 46 | 4.5 | 🔥 Over |
-| 18 | 23 | 4.5 | 🔥 Over |
-| 2 | 23 | 4.5 | 🔥 Over |
-| 1 | 23 | 4.5 | 🔥 Over |
-| 17 | 23 | 4.5 | 🔥 Over |
+| 11 | 46 | 4.5 | 🔥 Over |
+| 32 | 23 | 4.5 | 🔥 Over |
+| 12 | 23 | 4.5 | 🔥 Over |
+| 31 | 23 | 4.5 | 🔥 Over |
+| 29 | 23 | 4.5 | 🔥 Over |
 
 ### ❄️ Cold Numbers (Least Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 28 | 46 | 4.5 | Normal |
-| 18 | 23 | 4.5 | Normal |
-| 2 | 23 | 4.5 | Normal |
-| 1 | 23 | 4.5 | Normal |
-| 17 | 23 | 4.5 | Normal |
+| 11 | 46 | 4.5 | Normal |
+| 32 | 23 | 4.5 | Normal |
+| 12 | 23 | 4.5 | Normal |
+| 31 | 23 | 4.5 | Normal |
+| 29 | 23 | 4.5 | Normal |
 
 ### 📈 Number Analysis
-- **Average Number:** 15.4
-- **Median Number:** 17.0
-- **Standard Deviation:** 10.1
-- **Even Numbers:** 115 (71.4%)
-- **Odd Numbers:** 46 (28.6%)
-- **Low Numbers (1-18):** 115 (71.4%)
-- **High Numbers (19-36):** 46 (28.6%)
+- **Average Number:** 22.0
+- **Median Number:** 28.0
+- **Standard Deviation:** 9.3
+- **Even Numbers:** 69 (42.9%)
+- **Odd Numbers:** 92 (57.1%)
+- **Low Numbers (1-18):** 69 (42.9%)
+- **High Numbers (19-36):** 92 (57.1%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-| 23 | 23 | 14.3% |
-| 20 | 23 | 14.3% |
-| 31 | 23 | 14.3% |
-| 29 | 23 | 14.3% |
-| 15 | 23 | 14.3% |
+| 26 | 23 | 14.3% |
+| 12 | 23 | 14.3% |
+| 36 | 23 | 14.3% |
+| 2 | 23 | 14.3% |
+| 6 | 23 | 14.3% |
 - **Draws with Promo:** 161 (100.0%)
 - **Draws without Promo:** 0 (0.0%)
 
 ### 🔍 Pattern Analysis
 - **Consecutive Numbers:** 23 (14.3%)
-- **Same Number Repeats:** 0 (0.0%)
-- **Increasing Trends:** 68 (3400.0%)
-- **Decreasing Trends:** 92 (4600.0%)
+- **Same Number Repeats:** 23 (14.3%)
+- **Increasing Trends:** 45 (1500.0%)
+- **Decreasing Trends:** 92 (3066.7%)
 
 ### 🔮 Predictive Insights
-- **Hot Numbers:** 28, 18, 2, 1, 17
-- **Cold Numbers:** 18, 2, 1, 17, 14
-- **Over-Performing:** 28, 18, 2, 1, 17
+- **Hot Numbers:** 11, 32, 12, 31, 29
+- **Cold Numbers:** 32, 12, 31, 29, 28
+- **Over-Performing:** 11, 32, 12, 31, 29
 - **Under-Performing:** 
-- **Next Predicted Time:** 7
+- **Next Predicted Time:** 33
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 28(6), 2(3), 1(3)
-- **Recent Cold Numbers:** 17(3), 14(3), 18(2)
+- **Recent Hot Numbers:** 11(6), 12(3), 31(3)
+- **Recent Cold Numbers:** 29(3), 28(3), 32(2)
 
 ### 📈 Latest Results
-- **Draw #30-Sep** (2026-11-04) - 14: Mark 1 (31)
-- **Draw #07-Oct** (2026-11-04) - 36: Mark 28 (29)
-- **Draw #14-Oct** (2026-11-04) - 1: Mark 17 (15)
-- **Draw #21-Oct** (2026-11-04) - 11: Mark 28 (28)
-- **Draw #28-Oct** (2026-11-04) - 21: Mark 14 (14)
+- **Draw #01-Oct** (2026-11-05) - 13: Mark 31 (36)
+- **Draw #08-Oct** (2026-11-05) - 1: Mark 29 (2)
+- **Draw #15-Oct** (2026-11-05) - 34: Mark 28 (6)
+- **Draw #22-Oct** (2026-11-05) - 24: Mark 11 (7)
+- **Draw #29-Oct** (2026-11-05) - 6: Mark 11 (32)
 
 ---
-*Last updated: 2026-11-04 01:45:56*
+*Last updated: 2026-11-05 01:53:48*
 
 ## 🚀 Execution Summary
 
@@ -264,11 +264,11 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Total Records Processed:** 161
 - **New Records Added:** 7
 - **Duplicate Records Skipped:** 154
-- **Execution Time:** 114.54 seconds
+- **Execution Time:** 114.18 seconds
 - **Average Processing Speed:** 1.4 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 2,414
+- **Database Records:** 2,421
 - **Data Completeness:** 6.7% of total database
 - **Date Coverage:** 0 days
 - **Time Distribution Balance:** 14.3% - 14.3%
@@ -279,4 +279,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 - **Pattern Reliability:** Moderate
 
 ---
-*Execution completed at: 2026-11-04 01:45:56*
+*Execution completed at: 2026-11-05 01:53:48*
