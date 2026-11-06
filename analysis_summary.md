@@ -3,7 +3,7 @@
 
 ### 📊 Basic Statistics
 - **Total Draws:** 161
-- **Date Range:** 2026-11-05 to 2026-11-05
+- **Date Range:** 2026-11-06 to 2026-11-06
 - **Data Span:** 0 days
 - **Average Draws/Day:** 161.0
 - **Confidence Level:** Low
@@ -11,78 +11,77 @@
 ### ⏰ Time Distribution
 | Time | Frequency | Percentage |
 |------|-----------|------------|
-| 33 | 23 | 14.3% |
-| 14 | 23 | 14.3% |
-| 13 | 23 | 14.3% |
-| 1 | 23 | 14.3% |
+| 33 | 46 | 28.6% |
 | 34 | 23 | 14.3% |
-| 24 | 23 | 14.3% |
-| 6 | 23 | 14.3% |
+| 16 | 23 | 14.3% |
+| 25 | 23 | 14.3% |
+| 14 | 23 | 14.3% |
+| 20 | 23 | 14.3% |
 
 ### 🔥 Hot Numbers (Most Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 11 | 46 | 4.5 | 🔥 Over |
-| 32 | 23 | 4.5 | 🔥 Over |
-| 12 | 23 | 4.5 | 🔥 Over |
-| 31 | 23 | 4.5 | 🔥 Over |
-| 29 | 23 | 4.5 | 🔥 Over |
+| 19 | 46 | 4.5 | 🔥 Over |
+| 33 | 23 | 4.5 | 🔥 Over |
+| 25 | 23 | 4.5 | 🔥 Over |
+| 6 | 23 | 4.5 | 🔥 Over |
+| 2 | 23 | 4.5 | 🔥 Over |
 
 ### ❄️ Cold Numbers (Least Frequent)
 | Number | Frequency | Expected | Performance |
 |--------|-----------|----------|-------------|
-| 11 | 46 | 4.5 | Normal |
-| 32 | 23 | 4.5 | Normal |
-| 12 | 23 | 4.5 | Normal |
-| 31 | 23 | 4.5 | Normal |
-| 29 | 23 | 4.5 | Normal |
+| 19 | 46 | 4.5 | Normal |
+| 33 | 23 | 4.5 | Normal |
+| 25 | 23 | 4.5 | Normal |
+| 6 | 23 | 4.5 | Normal |
+| 2 | 23 | 4.5 | Normal |
 
 ### 📈 Number Analysis
-- **Average Number:** 22.0
-- **Median Number:** 28.0
-- **Standard Deviation:** 9.3
-- **Even Numbers:** 69 (42.9%)
-- **Odd Numbers:** 92 (57.1%)
-- **Low Numbers (1-18):** 69 (42.9%)
-- **High Numbers (19-36):** 92 (57.1%)
+- **Average Number:** 18.7
+- **Median Number:** 19.0
+- **Standard Deviation:** 10.4
+- **Even Numbers:** 46 (28.6%)
+- **Odd Numbers:** 115 (71.4%)
+- **Low Numbers (1-18):** 46 (28.6%)
+- **High Numbers (19-36):** 115 (71.4%)
 
 ###  Promo Analysis
 | Promo Type | Frequency | Percentage |
 |------------|-----------|------------|
-| 26 | 23 | 14.3% |
-| 12 | 23 | 14.3% |
+| 11 | 23 | 14.3% |
+| 5 | 23 | 14.3% |
+| 20 | 23 | 14.3% |
 | 36 | 23 | 14.3% |
-| 2 | 23 | 14.3% |
-| 6 | 23 | 14.3% |
+| 26 | 23 | 14.3% |
 - **Draws with Promo:** 161 (100.0%)
 - **Draws without Promo:** 0 (0.0%)
 
 ### 🔍 Pattern Analysis
-- **Consecutive Numbers:** 23 (14.3%)
-- **Same Number Repeats:** 23 (14.3%)
-- **Increasing Trends:** 45 (1500.0%)
-- **Decreasing Trends:** 92 (3066.7%)
+- **Consecutive Numbers:** 0 (0.0%)
+- **Same Number Repeats:** 0 (0.0%)
+- **Increasing Trends:** 68 (3400.0%)
+- **Decreasing Trends:** 92 (4600.0%)
 
 ### 🔮 Predictive Insights
-- **Hot Numbers:** 11, 32, 12, 31, 29
-- **Cold Numbers:** 32, 12, 31, 29, 28
-- **Over-Performing:** 11, 32, 12, 31, 29
+- **Hot Numbers:** 19, 33, 25, 6, 2
+- **Cold Numbers:** 33, 25, 6, 2, 27
+- **Over-Performing:** 19, 33, 25, 6, 2
 - **Under-Performing:** 
 - **Next Predicted Time:** 33
 
 ### 📊 Recent Trends (Last 20 Draws)
-- **Recent Hot Numbers:** 11(6), 12(3), 31(3)
-- **Recent Cold Numbers:** 29(3), 28(3), 32(2)
+- **Recent Hot Numbers:** 19(6), 25(3), 6(3)
+- **Recent Cold Numbers:** 2(3), 27(3), 33(2)
 
 ### 📈 Latest Results
-- **Draw #01-Oct** (2026-11-05) - 13: Mark 31 (36)
-- **Draw #08-Oct** (2026-11-05) - 1: Mark 29 (2)
-- **Draw #15-Oct** (2026-11-05) - 34: Mark 28 (6)
-- **Draw #22-Oct** (2026-11-05) - 24: Mark 11 (7)
-- **Draw #29-Oct** (2026-11-05) - 6: Mark 11 (32)
+- **Draw #02-Oct** (2026-11-06) - 34: Mark 19 (20)
+- **Draw #09-Oct** (2026-11-06) - 16: Mark 6 (36)
+- **Draw #16-Oct** (2026-11-06) - 25: Mark 19 (26)
+- **Draw #23-Oct** (2026-11-06) - 14: Mark 2 (1)
+- **Draw #30-Oct** (2026-11-06) - 20: Mark 27 (4)
 
 ---
-*Last updated: 2026-11-05 01:53:48*
+*Last updated: 2026-11-06 01:53:02*
 
 ## 🚀 Execution Summary
 
@@ -90,19 +89,19 @@
 - **Total Records Processed:** 161
 - **New Records Added:** 7
 - **Duplicate Records Skipped:** 154
-- **Execution Time:** 114.18 seconds
+- **Execution Time:** 115.55 seconds
 - **Average Processing Speed:** 1.4 records/second
 
 ### 🔍 Data Quality
-- **Database Records:** 2,421
-- **Data Completeness:** 6.7% of total database
+- **Database Records:** 2,428
+- **Data Completeness:** 6.6% of total database
 - **Date Coverage:** 0 days
-- **Time Distribution Balance:** 14.3% - 14.3%
+- **Time Distribution Balance:** 14.3% - 28.6%
 
 ### 📈 Analysis Confidence
 - **Confidence Level:** Low
 - **Statistical Significance:** Low
-- **Pattern Reliability:** Moderate
+- **Pattern Reliability:** Strong
 
 ---
-*Execution completed at: 2026-11-05 01:53:48*
+*Execution completed at: 2026-11-06 01:53:02*
